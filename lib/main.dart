@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:task_muse/const/colors.dart';
-import 'package:task_muse/get_started_page.dart';
-import 'package:task_muse/theme.dart';
+import 'core/const/colors.dart';
+import 'core/theme/light_theme.dart';
+import 'feature/get_started/view/get_started_page_view.dart';
 
 void main() {
   //bu kod statusbar coloruna eriştiriyor
   SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: ProjectColors().aquaticCool));
+      SystemUiOverlayStyle(statusBarColor: AppColor.aquaticCool.getColor()));
   runApp(const Main());
 }
 
@@ -23,3 +23,4 @@ class Main extends StatelessWidget {
     );
   }
 }
+

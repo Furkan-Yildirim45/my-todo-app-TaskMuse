@@ -1,14 +1,16 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:task_muse/buttom_sheet/main_custom_bottom_sheet.dart';
-import 'package:task_muse/const/colors.dart';
-import 'package:task_muse/extension/device_size.dart';
-import 'package:task_muse/extension/text_theme.dart';
-import 'package:task_muse/general_datas.dart';
+import 'package:task_muse/core/general_datas.dart';
+import 'package:task_muse/product/extension/context/general.dart';
+import 'package:task_muse/product/extension/context/size.dart';
+import 'package:task_muse/product/widget/category_button.dart';
 import 'package:task_muse/product/widget/text_with_space.dart';
 import 'package:task_muse/product/widget/to_do_card.dart';
 
-import 'core/custom_image_container.dart';
+import '../../../core/const/colors.dart';
+import '../../../core/widget/custom_image_container.dart';
+import '../../bottom_sheet/main_bottom_sheet.dart';
+import 'main_page_bottom_sheet.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -18,7 +20,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with MainBottomSheet{
-  final ProjectColors _projectColors = ProjectColors();
   late int bottomNavIndex;
   @override
   void initState() {
@@ -30,14 +31,10 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: _projectColors.aquaticCool,
+        backgroundColor: AppColor.aquaticCool.getColor(),
         onPressed: (){
           showCustomMainBottomSheet(context: context,
-            child: Column(
-              children: [
-                Text("Create a task"),
-              ],
-            ),
+            child: const MainPageBottomSheet(),
           );
         },
         child: const Icon(Icons.add,size: 40),
@@ -47,15 +44,15 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
           children: [
             //top component
             Container(
-              height: context.getDeviceHeight(context) * 0.3,
+              height: context.sized.dynamicHeigth(0.3),
               width: double.infinity,
               decoration: BoxDecoration(
-                  color: _projectColors.aquaticCool,
+                  color: AppColor.aquaticCool.getColor(),
                   image: const DecorationImage(
                       image: AssetImage("assets/images/buble.png"),
                       fit: BoxFit.cover)),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 18),
+                padding: const EdgeInsets.all(18),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -69,7 +66,7 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
                           Text(
                             "Hello Olivia!",
                             style: context
-                                .getTextTheme(context)
+                                .general.textTheme
                                 .titleLarge
                                 ?.copyWith(color: Colors.white),
                           ),
@@ -82,9 +79,9 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
                   //bottom of top place
                   Container(
                     width: double.infinity,
-                    height: context.getDeviceHeight(context) * 0.15,
+                    height: context.sized.dynamicHeigth( 0.15),
                     decoration: BoxDecoration(
-                      color: _projectColors.dragonFly,
+                      color: AppColor.dragonFly.getColor(),
                       borderRadius: BorderRadius.circular(12)
                     ),
                     child: Stack(
@@ -100,7 +97,7 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text("Today Reminder",style: context.getTextTheme(context).titleLarge?.copyWith(color: Colors.white),),
+                                        Text("Today Reminder",style: context.general.textTheme.titleLarge?.copyWith(color: Colors.white),),
                                         const TitleSmallTextWithSpace(text: "Meeting with client",top: 5,),
                                         const TitleSmallTextWithSpace(text: "10.00 AM",top: 5,),
                                       ],
@@ -140,12 +137,12 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
                 padding: const EdgeInsets.symmetric(horizontal: 18.0),
                 child: Container(
                   width: double.infinity,
-                  color: _projectColors.enoki,
+                  color: AppColor.enoki.getColor(),
                   child: ListView(
                     children: [
                       _bodyText(context: context, text: "Today's Tasks"),
                       SizedBox(
-                        height: context.getDeviceHeight(context) * 0.1 * (GeneralDatas.toDoCardItems?.length ?? 0) + 40 ,
+                        height: context.sized.dynamicHeigth(0.1) * (GeneralDatas.toDoCardItems?.length ?? 0) + 40 ,
                         child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: GeneralDatas.toDoCardItems?.length,
@@ -171,7 +168,7 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
       top: 0,
       initialActiveIndex: _BottomNavItems.home.index,
       backgroundColor: Colors.white,
-      activeColor: _projectColors.aquaticCool,
+      activeColor: AppColor.aquaticCool.getColor(),
       color: Colors.grey,
       items: [
         TabItem(icon: Icons.home_outlined,title: _BottomNavItems.home.setBottomNavItemsName()),
@@ -182,10 +179,12 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
   Padding _bodyText({required BuildContext context, required String text}) {
     return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(text,style: context.getTextTheme(context).titleMedium?.copyWith(color: _projectColors.boatSwain),),
+                        child: Text(text,style: context.general.textTheme.titleMedium?.copyWith(color: AppColor.boatSwain.getColor()),),
                       );
   }
 }
+
+
 
 enum _BottomNavItems{
   home,tasks
