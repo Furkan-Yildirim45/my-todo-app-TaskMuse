@@ -1,5 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_muse/core/const/hive_contants.dart';
+import 'package:task_muse/product/exception/cache_manager_exception.dart';
 import '../../feature/main_page/model/task_model.dart';
 
 abstract class ICacheManager<T>{
@@ -18,7 +19,6 @@ abstract class ICacheManager<T>{
     await _box?.clear();
   }
   List<T>? get getValues => _box?.values.toList();
-  // Box<T>? getBox() => _box;
   Future<void> addItems(List<T> items);
   Future<void> putItems(List<T> items);
   Future<void> addItem(T model);
@@ -29,7 +29,20 @@ abstract class ICacheManager<T>{
 }
 
 class TaskCacheManager extends ICacheManager<TaskModel>{
-  TaskCacheManager({required super.key});
+  TaskCacheManager({required CachingKeys key}) : super(key: key);
+
+  static TaskCacheManager? _instance;
+
+  static TaskCacheManager get instance {
+    if (_instance == null) {
+      throw TaskCacheManagerException();
+    }
+    return _instance!;
+  }
+
+  static void initialize({required CachingKeys key}) {
+    _instance ??= TaskCacheManager(key: key);
+  }
 
   @override
   Future<void> addItems(List<TaskModel> items) async {
@@ -70,5 +83,8 @@ class TaskCacheManager extends ICacheManager<TaskModel>{
 }
 
 enum CachingKeys {
-  taskToday,testKey
+  testKey,taskList,uiTestKey
 }
+
+
+///dikkat:singleton yaparken üst classdan değişken degeri alamazsın cünkü singletonlar staticlerdir! bu yuzden deger alamaz sen burda bunu bu sekilde yapmalısın

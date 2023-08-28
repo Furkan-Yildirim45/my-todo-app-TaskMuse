@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
+
 import 'package:hive_flutter/adapters.dart';
 import 'package:task_muse/core/const/hive_contants.dart';
 
@@ -9,7 +10,7 @@ class TaskModel {
   @HiveField(0)
   final String color;
   @HiveField(1)
-  final String title;
+  final String? title;
   @HiveField(2)
   final String? date;
   @HiveField(3)
@@ -20,14 +21,22 @@ class TaskModel {
   final String? subTitle;
 
   TaskModel({
-    required this.color,
-    required this.title,
+     required this.color,
+     this.title,
     this.date,
     this.isReminderActive = false,
     this.isComplete = false,
     this.subTitle,
   });
 
-  //renkleri kullanırken "$renkkodu" şeklinde kullanıyım!
-  int get colorValue => int.parse(color.replaceFirst("#", "0xff"));
+  static String colorToString(Color color) {
+    // Color değerini hex formatına çevirme işlemi
+    return '#${color.value.toRadixString(16).padLeft(8, '0')}';
+  }
+
+  static Color stringToColor(String colorString) {
+    // Hex formatındaki String'i Color değerine çevirme işlemi
+    final value = int.parse(colorString.replaceAll('#', ''), radix: 16);
+    return Color(value);
+  }
 }

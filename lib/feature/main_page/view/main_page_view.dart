@@ -1,14 +1,14 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:task_muse/core/general_datas.dart';
 import 'package:task_muse/product/extension/context/general.dart';
 import 'package:task_muse/product/extension/context/size.dart';
 import 'package:task_muse/product/widget/text_with_space.dart';
 import 'package:task_muse/product/widget/to_do_card.dart';
-
 import '../../../core/const/colors.dart';
 import '../../../core/widget/custom_image_container.dart';
+import '../../../product/utility/hive_manager.dart';
 import '../../bottom_sheet/main_bottom_sheet.dart';
+import '../model/task_model.dart';
 import 'main_page_bottom_sheet.dart';
 
 class MainPage extends StatefulWidget {
@@ -20,10 +20,24 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with MainBottomSheet{
   late int bottomNavIndex;
+  List<TaskModel>? taskItems;
+  late final TaskCacheManager _instance;
+
   @override
   void initState() {
     super.initState();
+    TaskCacheManager.initialize(key: CachingKeys.taskList);
+    _instance = TaskCacheManager.instance;
     bottomNavIndex = _BottomNavItems.home.index;
+    _initAlize();
+  }
+
+  Future<void> _initAlize() async {
+    await _instance.init();
+    if(_instance.getValues?.isNotEmpty ?? false){
+      taskItems = _instance.getValues;
+      setState(() {});
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -32,9 +46,14 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColor.aquaticCool.getColor(),
         onPressed: (){
-          showCustomMainBottomSheet(context: context,
+          final result = showCustomMainBottomSheet(context: context,
             child: const MainPageBottomSheet(),
           );
+          if(result is bool){
+            setState(() {
+              taskItems = _instance.getValues;
+            });
+          }
         },
         child: const Icon(Icons.add,size: 40),
       ),
@@ -139,17 +158,19 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
                   color: AppColor.enoki.getColor(),
                   child: ListView(
                     children: [
-                      _bodyText(context: context, text: "Today's Tasks"),
+                      _bodyText(context: context, text: "Your Tasks"),
                       SizedBox(
-                        height: context.sized.dynamicHeigth(0.1) * (GeneralDatas.toDoCardItems?.length ?? 0) + 40 ,
+                        height: context.sized.dynamicHeigth(0.1) * (taskItems?.length ?? 0) + 40 ,
                         child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: GeneralDatas.toDoCardItems?.length,
+                          itemCount: taskItems?.length ?? 0,
                           itemBuilder: (context, index) => ToDoCard(index: index),
                         ),
                       ),
-                      _bodyText(context: context, text: "Tomorrow Tasks"),
-                    ],
+                      (taskItems?.isEmpty ?? false) ? const Center(
+                          child: CircularProgressIndicator()) : const SizedBox.shrink(),
+                      Text('${taskItems?.length}')
+                      ],
                   )
                 ),
               ),
@@ -183,8 +204,6 @@ class _MainPageState extends State<MainPage> with MainBottomSheet{
   }
 }
 
-
-
 enum _BottomNavItems{
   home,tasks
 }
@@ -199,6 +218,3 @@ extension _BottomNavItemsExtension on _BottomNavItems{
     }
   }
 }
-
-///tıklanma kısımlarında active pasive kısımlarını yapmak!
-/// senaryoya göre şekillendirilecek bi app!

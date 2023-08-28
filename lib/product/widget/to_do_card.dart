@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:task_muse/core/general_datas.dart';
+import 'package:task_muse/feature/main_page/model/task_model.dart';
 import 'package:task_muse/product/extension/context/general.dart';
 import 'package:task_muse/product/extension/context/size.dart';
+import 'package:task_muse/product/utility/hive_manager.dart';
 import '../../core/const/colors.dart';
 import '../../core/widget/custom_circle_button_with_field.dart';
-import '../model/to_do_card_model.dart';
 
 class ToDoCard extends StatefulWidget {
   const ToDoCard({
     super.key,
     required this.index,
   });
-
   final int index;
-
   @override
   State<ToDoCard> createState() => _ToDoCardState();
 }
 
 class _ToDoCardState extends State<ToDoCard> {
-  List<ToDoCardModel>? todoItems;
+  List<TaskModel>? taskItems;
 
   @override
   void initState() {
     super.initState();
-    todoItems = GeneralDatas.toDoCardItems;
+    taskItems = TaskCacheManager.instance.getValues?.toList();
   }
 
   @override
@@ -53,7 +52,7 @@ class _ToDoCardState extends State<ToDoCard> {
           child: CustomCircleButtonWithField(
             onTap: () {},
             size: 32,
-            borderColor: todoItems![widget.index].color,
+            borderColor: TaskModel.stringToColor(taskItems![widget.index].color),
             backgroundColor: Colors.white,
             child: const Icon(
               Icons.check,
@@ -68,14 +67,14 @@ class _ToDoCardState extends State<ToDoCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                todoItems![widget.index].text,
+                taskItems?[widget.index].title ?? "",
                 style: context
                     .general.textTheme
                     .titleLarge
                     ?.copyWith(color: AppColor.boatSwain.getColor()),
               ),
               Text(
-                todoItems![widget.index].time,
+                taskItems?[widget.index].date ?? "",
                 style: context.general.textTheme.titleMedium,
               ),
             ],
@@ -90,7 +89,7 @@ class _ToDoCardState extends State<ToDoCard> {
             child: Icon(
               Icons.notifications,
               size: 28,
-              color: todoItems![widget.index].notificationIsActive
+              color: taskItems![widget.index].isReminderActive
                   ? AppColor.mikadoYellow.getColor()
                   : Colors.grey,
             ),
