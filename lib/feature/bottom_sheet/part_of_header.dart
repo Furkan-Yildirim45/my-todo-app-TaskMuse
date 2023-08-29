@@ -7,26 +7,26 @@ class _BaseSheetHeaderComponent extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: generalSize,
+      height: context.sized.floatActionButtonSize,
       child: Stack(
         alignment: Alignment.center,
         clipBehavior: Clip.none,
         children: [
           Positioned(
-            top: -generalSize / 2,
+            top: -(context.sized.floatActionButtonSize / 2),
             child: InkWell(
-                borderRadius: BorderRadius.circular(generalSize / 2),
+                borderRadius: BorderRadius.circular(context.sized.floatActionButtonSize / 2),
                 child: Container(
-                    width: generalSize,
-                    height: generalSize,
+                    width: context.sized.floatActionButtonSize,
+                    height: context.sized.floatActionButtonSize,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(generalSize / 2),
+                      borderRadius: BorderRadius.circular(context.sized.floatActionButtonSize / 2),
                       color: Colors.red,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.close,
                       color: Colors.white,
-                      size: 35,
+                      size: context.iconSize.large,
                     )),
                 onTap: () {
                   Navigator.of(context).pop<bool>(true);

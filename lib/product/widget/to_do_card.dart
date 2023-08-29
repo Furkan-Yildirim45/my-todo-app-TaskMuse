@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:task_muse/core/general_datas.dart';
 import 'package:task_muse/feature/main_page/model/task_model.dart';
+import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/general.dart';
+import 'package:task_muse/product/extension/context/icon_size.dart';
 import 'package:task_muse/product/extension/context/size.dart';
 import 'package:task_muse/product/utility/hive_manager.dart';
 import '../../core/const/colors.dart';
@@ -31,71 +33,83 @@ class _ToDoCardState extends State<ToDoCard> {
     return Container(
       margin: widget.index == (GeneralDatas.toDoCardItems!.length - 1)
           ? EdgeInsets.zero
-          : const EdgeInsets.only(bottom: 10),
+          : EdgeInsets.only(bottom: context.sized.normalValue),
       height: context.sized.dynamicHeigth(0.1),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
+        borderRadius: context.border.largeBorderRadius,
+        boxShadow: [
           BoxShadow(
             color: Colors.black12,
-            spreadRadius: 0,
+            spreadRadius: context.sized.kZero,
             blurRadius: 1,
           )
         ],
       ),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         //icon place
-        Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: context.sized.dynamicHeigth(0.025)),
-          child: CustomCircleButtonWithField(
-            onTap: () {},
-            size: 32,
-            borderColor: TaskModel.stringToColor(taskItems![widget.index].color),
-            backgroundColor: Colors.white,
-            child: const Icon(
-              Icons.check,
-              size: 28,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                taskItems?[widget.index].title ?? "",
-                style: context
-                    .general.textTheme
-                    .titleLarge
-                    ?.copyWith(color: AppColor.boatSwain.getColor()),
-              ),
-              Text(
-                taskItems?[widget.index].date ?? "",
-                style: context.general.textTheme.titleMedium,
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding:
-              EdgeInsets.only(right: context.sized.dynamicHeigth(0.025)),
-          child: CustomCircleButtonWithField(
-            onTap: () {},
-            backgroundColor: Colors.transparent,
-            child: Icon(
-              Icons.notifications,
-              size: 28,
-              color: taskItems![widget.index].isReminderActive
-                  ? AppColor.mikadoYellow.getColor()
-                  : Colors.grey,
-            ),
-          ),
-        ),
+        _circleColorAndIconButtonPlace(context),
+        _taskTitleAndDate(context),
+        _reminderButton(context),
       ]),
     );
+  }
+
+  Padding _reminderButton(BuildContext context) {
+    return Padding(
+        padding:
+            EdgeInsets.only(right: context.sized.dynamicHeigth(0.025)),
+        child: CustomCircleButtonWithField(
+          onTap: () {},
+          backgroundColor: Colors.transparent,
+          child: Icon(
+            Icons.notifications,
+            size: context.iconSize.normal,
+            color: taskItems![widget.index].isReminderActive
+                ? AppColor.mikadoYellow.getColor()
+                : Colors.grey,
+          ),
+        ),
+      );
+  }
+
+  Expanded _taskTitleAndDate(BuildContext context) {
+    return Expanded(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              taskItems?[widget.index].title ?? "",
+              style: context
+                  .general.textTheme
+                  .titleLarge
+                  ?.copyWith(color: AppColor.boatSwain.getColor()),
+            ),
+            Text(
+              taskItems?[widget.index].date ?? "",
+              style: context.general.textTheme.titleMedium,
+            ),
+          ],
+        ),
+      );
+  }
+
+  Padding _circleColorAndIconButtonPlace(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: context.sized.dynamicHeigth(0.025)),
+        child: CustomCircleButtonWithField(
+          onTap: () {},
+          size: context.sized.dynamicHeigth(0.05),
+          borderColor: TaskModel.stringToColor(taskItems![widget.index].color),
+          backgroundColor: Colors.white,
+          child: Icon(
+            Icons.check,
+            size: context.iconSize.normal,
+            color: Colors.white,
+          ),
+        ),
+      );
   }
 }

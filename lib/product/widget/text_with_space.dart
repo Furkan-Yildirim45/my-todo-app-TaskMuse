@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_muse/product/extension/context/general.dart';
+import 'package:task_muse/product/extension/context/size.dart';
 
 class TitleSmallTextWithSpace extends StatelessWidget {
   const TitleSmallTextWithSpace(
@@ -13,7 +14,7 @@ class TitleSmallTextWithSpace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: top ?? 0, bottom: bottom ?? 0),
+      padding: EdgeInsets.only(top: top ?? context.sized.kZero, bottom: bottom ?? context.sized.kZero),
       child: Text(
         text,
         style: context

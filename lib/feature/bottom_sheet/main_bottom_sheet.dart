@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_muse/product/extension/context/icon_size.dart';
 import 'package:task_muse/product/extension/context/size.dart';
 import '../../core/const/colors.dart';
 part 'part_of_header.dart';
@@ -6,14 +7,14 @@ part 'part_of_header.dart';
 mixin MainBottomSheet {
   Future<T?> showCustomMainBottomSheet<T>(
       {required BuildContext context, Widget? child}) async {
-    const BorderRadius generalModalBottomSheetBorderRadius =
-    BorderRadius.vertical(top: Radius.circular(50));
+    BorderRadius generalModalBottomSheetBorderRadius =
+    BorderRadius.vertical(top: Radius.circular(context.sized.dynamicHeigth(0.07)));
     return showModalBottomSheet(
        useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: AppColor.enoki.getColor(),
       context: context,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
           borderRadius: generalModalBottomSheetBorderRadius),
       builder: (context) {
         return _CustomMainBottomSheet(
@@ -48,7 +49,6 @@ class _CustomMainBottomSheet extends StatelessWidget {
 
 
 mixin _BaseSheetHeaderComponentUtility {
-  final double generalSize = 56;
   final IconData iconArrowBack = Icons.arrow_back;
   final double dividerDefaultHeight = 5;
 }

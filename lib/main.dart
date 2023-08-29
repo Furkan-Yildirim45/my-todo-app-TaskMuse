@@ -7,7 +7,8 @@ import 'core/theme/light_theme.dart';
 
 Future<void> main() async {
   //bu kod statusbar coloruna eriştiriyor
-  await Hive.initFlutter("lib/dataBase");
+  const String databaseUrl = "lib/dataBase";
+  await Hive.initFlutter(databaseUrl);
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: AppColor.aquaticCool.getColor()));
   runApp(const Main());
@@ -25,5 +26,6 @@ class Main extends StatelessWidget {
     );
   }
 }
-//ui test başarılı abi şimdi asıl Main_page deki işime gelebilirim!
+
+//state güncellemesini bi araştırıcam managment olmadan önce ve suanda code recover complete!
 //caching işlemi başarılı fakat ekledigimde setState olmuyor bunu statemanagment ile çözücem,bunu çözmeden önce projeyi bi temiz hale çekiyim!

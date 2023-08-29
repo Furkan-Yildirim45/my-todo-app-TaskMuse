@@ -28,7 +28,7 @@ class _CategoryButtonState extends State<CategoryButton> {
       ),
       onPressed: widget.onPressed,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: EdgeInsets.symmetric(horizontal: context.sized.smallValue),
         child: Center(
             child: Text(
           widget.categoryTitle ?? "",
