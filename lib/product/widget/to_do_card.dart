@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_muse/core/general_datas.dart';
-import 'package:task_muse/feature/main_page/model/task_model.dart';
+import 'package:task_muse/product/model/task_model.dart';
 import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/general.dart';
 import 'package:task_muse/product/extension/context/icon_size.dart';
@@ -31,7 +31,7 @@ class _ToDoCardState extends State<ToDoCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: widget.index == (GeneralDatas.toDoCardItems!.length - 1)
+      margin: widget.index == ((taskItems?.length ?? 0) - 1)
           ? EdgeInsets.zero
           : EdgeInsets.only(bottom: context.sized.normalValue),
       height: context.sized.dynamicHeigth(0.1),

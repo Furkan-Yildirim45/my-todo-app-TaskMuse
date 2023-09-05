@@ -23,7 +23,7 @@ class _ContextPaddingExtension{
 
   EdgeInsets get bottomOnlyNormal => EdgeInsets.only(bottom: _valueNormal);
 
-  EdgeInsets get largeSymmetricHorizontal => EdgeInsets.symmetric(horizontal: _valueMedium);
+  EdgeInsets get mediumSymmetricHorizontal => EdgeInsets.symmetric(horizontal: _valueMedium);
 
   EdgeInsets get normalSymmetricVertical => EdgeInsets.symmetric(vertical: _valueNormal);
 }

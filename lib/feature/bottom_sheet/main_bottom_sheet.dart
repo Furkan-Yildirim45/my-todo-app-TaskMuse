@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/product/extension/context/icon_size.dart';
 import 'package:task_muse/product/extension/context/size.dart';
 import '../../core/const/colors.dart';
+
 part 'part_of_header.dart';
 
 mixin MainBottomSheet {
-  Future<T?> showCustomMainBottomSheet<T>(
-      {required BuildContext context, Widget? child}) async {
+  Future<T?> showCustomMainBottomSheet<T extends Cubit>(
+      {required BuildContext context, Widget? child, required T cubit}) async {
     BorderRadius generalModalBottomSheetBorderRadius =
-    BorderRadius.vertical(top: Radius.circular(context.sized.dynamicHeigth(0.07)));
+    BorderRadius.vertical(
+        top: Radius.circular(context.sized.dynamicHeigth(0.07)));
     return showModalBottomSheet(
-       useSafeArea: true,
+      useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: AppColor.enoki.getColor(),
       context: context,
       shape: RoundedRectangleBorder(
           borderRadius: generalModalBottomSheetBorderRadius),
       builder: (context) {
-        return _CustomMainBottomSheet(
-          child: child,
+        return BlocProvider<T>.value(
+          value: cubit,
+          child: _CustomMainBottomSheet(
+            child: child,
+          ),
         );
       },
     );

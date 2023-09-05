@@ -1,16 +1,16 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/core/general_datas.dart';
-import 'package:task_muse/feature/main_page/model/task_model.dart';
+import 'package:task_muse/feature/main_page/cubit/main_page_cubit.dart';
 import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/general.dart';
 import 'package:task_muse/product/extension/context/padding.dart';
 import 'package:task_muse/product/extension/context/size.dart';
-import 'package:task_muse/product/utility/hive_manager.dart';
 
 import '../../../product/widget/category_button.dart';
+
 part 'bottom_sheet_parts/part_of_choose_color.dart';
+
 part 'bottom_sheet_parts/part_of_tags_place.dart';
 
 class MainPageBottomSheet extends StatefulWidget {
@@ -22,9 +22,10 @@ class MainPageBottomSheet extends StatefulWidget {
   State<MainPageBottomSheet> createState() => _MainPageBottomSheetState();
 }
 
-class _MainPageBottomSheetState extends State<MainPageBottomSheet> with _BottomSheetUtility{
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _subTitleController = TextEditingController();
+class _MainPageBottomSheetState extends State<MainPageBottomSheet>
+    with _BottomSheetUtility {
+  late final TextEditingController _titleController = TextEditingController();
+  late final TextEditingController _subtitleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,88 +56,73 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet> with _BottomS
 
   Padding _setColorText(BuildContext context) {
     return Padding(
-                padding: context.padding.topOnlyMedium,
-                child: Text(
-                  setColorText,
-                  style: context.general.textTheme.titleSmall,
-                ),
-              );
+      padding: context.padding.topOnlyMedium,
+      child: Text(
+        setColorText,
+        style: context.general.textTheme.titleSmall,
+      ),
+    );
   }
 
   Padding _categoryText() {
     return Padding(
-                padding: context.padding.topOnlyMedium,
-                child: Text(categoryText),
-              );
+      padding: context.padding.topOnlyMedium,
+      child: Text(categoryText),
+    );
   }
 
   TextFormField _descriptionTextFormField() {
     return TextFormField(
-                controller: _subTitleController,
-                maxLines: 1,
-                decoration: InputDecoration(
-                  hintText: yourDescriptionText,
-                ),
-              );
+      controller: _subtitleController,
+      maxLines: 1,
+      decoration: InputDecoration(
+        hintText: yourDescriptionText,
+      ),
+    );
   }
 
   TextFormField _titleTextFormField() {
     return TextFormField(
-                controller: _titleController,
-                maxLines: 1,
-                decoration: InputDecoration(
-                  hintText: addTaskTitle,
-                ),
-                maxLength: 50,
-              );
+      controller: _titleController,
+      maxLines: 1,
+      decoration: InputDecoration(
+        hintText: addTaskTitle,
+      ),
+      maxLength: 50,
+    );
   }
 
   Padding _addTaskButton(BuildContext context) {
     return Padding(
-          padding: context.padding.bottomOnlyNormal,
-          child: SizedBox(
-            width: context.sized.dynamicWidth(0.6),
-            height: context.sized.floatActionButtonSize,
-            child: ElevatedButton(
-              onPressed: () async {
-                if (_titleController.text.isNotEmpty &&
-                    _subTitleController.text.isNotEmpty) {
-                  await TaskCacheManager.instance.addItem(TaskModel(
-                    title: _titleController.text,
-                    subTitle: _subTitleController.text,
-                    color: TaskModel.colorToString(_selectedColor() ?? Colors.white),
-                    date: tampDateText,
-                  )).whenComplete(() {
-                    Navigator.of(context).pop<bool>(true);
-                  });
-                }
-              },
-              style: ButtonStyle(
-                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                      borderRadius: context.border.largeBorderRadius))),
-              child: Text(
-                addTaskText,
-                style: context.general.textTheme.titleLarge
-                    ?.copyWith(color: Colors.white),
-              ),
-            ),
+      padding: context.padding.bottomOnlyNormal,
+      child: SizedBox(
+        width: context.sized.dynamicWidth(0.6),
+        height: context.sized.floatActionButtonSize,
+        child: ElevatedButton(
+          onPressed: () {
+            BlocProvider.of<MainPageCubit>(context).bottomSheetAddTaskMethod(
+                context,
+                titleController: _titleController,
+                subtitleController: _subtitleController);
+          },
+          style: ButtonStyle(
+              shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                  borderRadius: context.border.largeBorderRadius))),
+          child: Text(
+            addTaskText,
+            style: context.general.textTheme.titleLarge
+                ?.copyWith(color: Colors.white),
           ),
-        );
+        ),
+      ),
+    );
   }
 
-  Text _addNewTaskText(BuildContext context) => Text(addNewTaskText, style: context.general.textTheme.titleLarge);
-
-  Color? _selectedColor(){
-    if(GeneralDatas.personalColor?.isNotEmpty ?? false){
-      for(var value in GeneralDatas.personalColor!){
-        if(value.isActive) return value.color;
-      }
-    }
-    return null;
-  }
+  Text _addNewTaskText(BuildContext context) =>
+      Text(addNewTaskText, style: context.general.textTheme.titleLarge);
 }
 
-mixin _BottomSheetUtility{
+mixin _BottomSheetUtility {
   final String addNewTaskText = "Add new task";
   final String addTaskText = "Add task";
   final String tampDateText = "Temp Date!";
@@ -146,3 +132,4 @@ mixin _BottomSheetUtility{
   final String setColorText = "Set Color";
 }
 
+// baba chatoya bi entegrasyon seysi yaptırdım ona bi bak!

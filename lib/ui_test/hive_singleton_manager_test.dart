@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_muse/core/const/colors.dart';
-import 'package:task_muse/feature/main_page/model/task_model.dart';
+import 'package:task_muse/product/model/task_model.dart';
 import 'package:task_muse/product/utility/hive_manager.dart';
 
 class HiveSingletonManagerTest extends StatefulWidget {

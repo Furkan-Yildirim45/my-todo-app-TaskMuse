@@ -56,7 +56,7 @@ class _ChooseColorState extends State<_ChooseColor> {
     return Container(
         margin: context.padding.topOnlyNormal,
         color: Colors.black12,
-        width: MediaQuery.of(context).size.width,
+        width: context.sized.width,
         height: context.sized.smallValue,
         child: Stack(
           children: [

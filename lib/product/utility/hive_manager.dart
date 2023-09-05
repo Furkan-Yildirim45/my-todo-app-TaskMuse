@@ -1,7 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_muse/core/const/hive_contants.dart';
 import 'package:task_muse/product/exception/cache_manager_exception.dart';
-import '../../feature/main_page/model/task_model.dart';
+import '../model/task_model.dart';
 
 abstract class ICacheManager<T>{
   final CachingKeys key;

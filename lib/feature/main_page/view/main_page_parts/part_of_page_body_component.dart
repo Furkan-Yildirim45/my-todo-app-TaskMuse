@@ -7,54 +7,42 @@ class _PageBodyComponent extends StatefulWidget {
   State<_PageBodyComponent> createState() => _PageBodyComponentState();
 }
 
-class _PageBodyComponentState extends State<_PageBodyComponent> with _PageOfBodyUtility{
-  List<TaskModel>? taskItems;
-  late final TaskCacheManager _instance;
-
+class _PageBodyComponentState extends State<_PageBodyComponent>
+    with _PageOfBodyUtility {
   @override
   void initState() {
     super.initState();
-    TaskCacheManager.initialize(key: CachingKeys.taskList);
-    _instance = TaskCacheManager.instance;
-    _initAlize();
-  }
-
-  Future<void> _initAlize() async {
-    await _instance.init();
-    if (_instance.getValues?.isNotEmpty ?? false) {
-      taskItems = _instance.getValues;
-      setState(() {});
-    }
+    context.read<MainPageCubit>().setItemsToTaskItems();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: context.padding.largeSymmetricHorizontal,
-        child: Container(
-            width: context.sized.width,
-            color: AppColor.enoki.getColor(),
-            child: ListView(
-              children: [
-                _bodyText(context: context, text: titleYourTask),
-                SizedBox(
-                  height: context.sized.largeValue *
-                          (taskItems?.length ?? context.sized.kZero.toInt()) +
-                      spaceWithFloatButton(context),
-                  child: ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: taskItems?.length ?? context.sized.kZero.toInt(),
-                    itemBuilder: (context, index) => ToDoCard(index: index),
+    return BlocBuilder<MainPageCubit, MainPageState>(
+      builder: (context, state) {
+        return Expanded(
+          child: Padding(
+            padding: context.padding.mediumSymmetricHorizontal,
+            child: Container(
+              width: context.sized.width,
+              color: AppColor.enoki.getColor(),
+              child: ListView(
+                children: [
+                  _bodyText(context: context, text: titleYourTask),
+                  SizedBox(
+                    height: addedCardHeight * (state.taskItems?.length ?? context.sized.kZero.toInt()),
+                    child: ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.taskItems?.length ??
+                          context.sized.kZero.toInt(),
+                      itemBuilder: (context, index) => ToDoCard(index: index),
+                    ),
                   ),
-                ),
-                (taskItems?.isEmpty ?? false)
-                    ? const Center(child: CircularProgressIndicator())
-                    : const SizedBox.shrink(),
-                Text('${taskItems?.length}')
-              ],
-            )),
-      ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -70,7 +58,9 @@ class _PageBodyComponentState extends State<_PageBodyComponent> with _PageOfBody
   }
 }
 
-mixin _PageOfBodyUtility{
-  double spaceWithFloatButton(BuildContext context) => context.sized.dynamicHeigth(0.06);
+mixin _PageOfBodyUtility on State<_PageBodyComponent>{
+  double get spaceWithFloatButton => context.sized.dynamicHeigth(0.06);
+  double get addedCardHeight => (context.sized.dynamicHeigth(0.115));
   final String titleYourTask = "Your Tasks";
 }
+

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_muse/core/const/colors.dart';
-import 'package:task_muse/feature/main_page/model/task_model.dart';
+import 'package:task_muse/product/model/task_model.dart';
 import 'package:task_muse/product/utility/hive_manager.dart';
 
 void main(){

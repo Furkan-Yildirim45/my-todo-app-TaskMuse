@@ -7,7 +7,7 @@ class _ContextNavigationExtension {
   NavigatorState get navigation => Navigator.of(_context);
 
   Future<bool> maybePop<T extends Object?>([T? data]) => navigation.maybePop(data);
-  void popWithRoot() => Navigator.of(_context,rootNavigator: true).pop();
+  void pop<T extends Object?>([T? result]) => navigation.pop();
 
   Future<Object?> navigatePushNamed<T extends Object?> (
       String path,
