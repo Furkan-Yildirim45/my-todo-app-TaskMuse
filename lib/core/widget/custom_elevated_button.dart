@@ -27,7 +27,7 @@ class CustomElevatedButton extends StatelessWidget {
   final EdgeInsets? padding;
   final AlignmentGeometry? alignment;
   final Duration? animationDuration;
-  final MaterialStateProperty<double?>? elevation;
+  final double? elevation;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class CustomElevatedButton extends StatelessWidget {
           alignment: alignment,
           shadowColor: MaterialStatePropertyAll<Color?>(shadowColor),
           animationDuration: animationDuration,
-          elevation: elevation,
+          elevation: MaterialStatePropertyAll(elevation),
         ),
         onLongPress: onLongPress ?? () {},
         child: child,

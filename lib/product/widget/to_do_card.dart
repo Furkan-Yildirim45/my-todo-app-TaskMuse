@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/product/extension/context/duration.dart';
+import 'package:task_muse/product/extension/context/padding.dart';
 import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
 import 'package:task_muse/product/model/task_model.dart';
 import 'package:task_muse/product/extension/context/border_radius.dart';
@@ -27,12 +28,11 @@ class ToDoCard extends StatefulWidget {
 class _ToDoCardState extends State<ToDoCard> with _TodoCardUtility {
   @override
   Widget build(BuildContext context) {
+
     return AnimatedContainer(
-      transform: (widget.taskItems?[widget.index].isSwiped ?? false)
-          ? Matrix4.translationValues(-context.sized.dynamicHeigth(0.08), 0, 0)
-          : Matrix4.translationValues(0, 0, 0),
+      transform: containerTransform(),
       duration: context.duration.durationFast,
-      margin: mainContainerMargin(),
+      margin: _containerMargin(),
       height: context.sized.dynamicHeigth(0.1),
       decoration: _mainContainerDecoration(context),
       child: ElevatedButton(
@@ -57,10 +57,11 @@ class _ToDoCardState extends State<ToDoCard> with _TodoCardUtility {
 }
 
 mixin _TodoCardUtility on State<ToDoCard> {
-  EdgeInsets mainContainerMargin() =>
-      widget.index == ((widget.taskItems?.length ?? 0) - 1)
-          ? EdgeInsets.zero
-          : EdgeInsets.only(bottom: context.sized.normalValue);
+  Matrix4 containerTransform() => (widget.taskItems?[widget.index].isSwiped ?? false)
+      ? Matrix4.translationValues(-context.sized.dynamicHeigth(0.15), 0, 0)
+      : Matrix4.translationValues(0, 0, 0);
+
+  EdgeInsets _containerMargin() => context.padding.bottomOnlyNormal;
 
   BoxDecoration _mainContainerDecoration(BuildContext context) {
     return BoxDecoration(
@@ -119,8 +120,12 @@ mixin _TodoCardUtility on State<ToDoCard> {
         children: [
           Text(
             widget.taskItems?[widget.index].title ?? "",
-            style: context.general.textTheme.titleLarge
-                ?.copyWith(color: AppColor.boatSwain.getColor()),
+            style: context.general.textTheme.titleLarge?.copyWith(
+                color: (widget.taskItems?[widget.index].isComplete ?? false) ? Colors.grey : AppColor.boatSwain.getColor(),
+                decoration:
+                    (widget.taskItems?[widget.index].isComplete ?? false)
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none),
           ),
           Text(
             widget.taskItems?[widget.index].date ?? "",
@@ -137,10 +142,7 @@ mixin _TodoCardUtility on State<ToDoCard> {
           EdgeInsets.symmetric(horizontal: context.sized.dynamicHeigth(0.025)),
       child: CustomCircleButtonWithField(
         onTap: () {
-          setState(() {
-            widget.taskItems?[widget.index].isComplete =
-                !(widget.taskItems?[widget.index].isComplete ?? true);
-          });
+          context.read<GlobalManageCubit>().changeIsComplete(widget.index);
         },
         size: context.sized.dynamicHeigth(0.05),
         borderColor:

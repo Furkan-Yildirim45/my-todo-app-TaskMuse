@@ -16,6 +16,7 @@ class _ContextSizeExtension{
   double get littleLargeValue => height * 0.04;
   double get largeValue => height * 0.1;
   double get floatActionButtonSize => height * 0.08;
+  double get middleButtonSize => height * 0.06;
 
   double dynamicWidth(double value) => width * value;
   double dynamicHeigth(double value) => height * value;

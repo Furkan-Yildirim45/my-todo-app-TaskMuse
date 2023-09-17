@@ -9,6 +9,15 @@ import 'global_manage_state.dart';
 class GlobalManageCubit extends Cubit<GlobalManageState> {
   GlobalManageCubit() : super(GlobalManageState());
 
+  void changeIsComplete(int index){
+    final tempList = state.taskItems ?? [];
+    emit(state.copyWith(isLoading: true));
+    if(checkTaskItemsNotNullAndEmpty){
+      tempList[index].isComplete = !(tempList[index].isComplete);
+    }
+    emit(state.copyWith(isLoading: false,taskItems: tempList));
+  }
+
   void changeIsSwiped(int cardIndex) {
     final tempList = state.taskItems ?? [];
     bool swipedValue = state.isAnyCardSwiped ?? false;
@@ -54,12 +63,14 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
   Future<void> bottomSheetAddTaskMethod(BuildContext context,
       {required TextEditingController titleController,
         required TextEditingController subtitleController}) async {
+    final DateTime now = DateTime.now();
+    final String dateNow = "${now.day}.${now.month}.${now.year}";
     emit(state.copyWith(isLoading: true));
     if (titleController.text.isNotEmpty && subtitleController.text.isNotEmpty) {
       final task = TaskModel(
         title: titleController.text,
         subTitle: subtitleController.text,
-        date: "date",
+        date: dateNow,
         color: TaskModel.colorToString(_selectedColor() ?? Colors.white),
       );
       final updatedList = state.taskItems ?? [];
