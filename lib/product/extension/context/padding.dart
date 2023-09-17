@@ -12,6 +12,11 @@ class _ContextPaddingExtension{
   double get _valueMedium => _context.sized.mediumValue; //20
 
   EdgeInsets dynamicAll(double value) => EdgeInsets.all(_context.sized.height * value);
+
+  EdgeInsets dynamicSymmetric({required double vertical, required double horizontal})
+  => EdgeInsets.symmetric(vertical: _context.sized.height * vertical, horizontal: _context.sized.height * horizontal);
+
+  EdgeInsets get kZeroPadding => EdgeInsets.zero;
   EdgeInsets get allMedium => EdgeInsets.all(_valueMedium);
   EdgeInsets get allNormal => EdgeInsets.all(_valueNormal);
 

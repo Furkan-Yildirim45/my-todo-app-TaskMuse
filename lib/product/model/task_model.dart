@@ -14,11 +14,12 @@ class TaskModel {
   @HiveField(2)
   final String? date;
   @HiveField(3)
-  final bool isReminderActive;
+  bool isReminderActive;
   @HiveField(4)
-  final bool isComplete;
+  bool isComplete;
   @HiveField(5)
   final String? subTitle;
+  bool isSwiped;
 
   TaskModel({
      required this.color,
@@ -27,6 +28,7 @@ class TaskModel {
     this.isReminderActive = false,
     this.isComplete = false,
     this.subTitle,
+    this.isSwiped = false,
   });
 
   static String colorToString(Color color) {

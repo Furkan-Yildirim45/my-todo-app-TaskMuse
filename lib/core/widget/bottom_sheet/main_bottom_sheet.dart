@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/product/extension/context/icon_size.dart';
 import 'package:task_muse/product/extension/context/size.dart';
-import '../../core/const/colors.dart';
+import '../../const/colors.dart';
 
 part 'part_of_header.dart';
 

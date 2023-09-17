@@ -21,8 +21,8 @@ class _MainPageFloatActionButtonState extends State<_MainPageFloatActionButton>
   }
 
   void _onPressedOfFloatActionButton() {
-    showCustomMainBottomSheet<MainPageCubit>(
-      cubit: MainPageCubit(),
+    showCustomMainBottomSheet<GlobalManageCubit>(
+      cubit: GlobalManageProvider.globalManageCubit,
       context: context,
       child: const MainPageBottomSheet(),
     );

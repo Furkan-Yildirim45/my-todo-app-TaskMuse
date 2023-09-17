@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/core/general_datas.dart';
-import 'package:task_muse/feature/main_page/cubit/main_page_cubit.dart';
 import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/general.dart';
 import 'package:task_muse/product/extension/context/padding.dart';
 import 'package:task_muse/product/extension/context/size.dart';
-
+import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
 import '../../../product/widget/category_button.dart';
 
 part 'bottom_sheet_parts/part_of_choose_color.dart';
-
 part 'bottom_sheet_parts/part_of_tags_place.dart';
 
 class MainPageBottomSheet extends StatefulWidget {
@@ -100,7 +98,7 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet>
         height: context.sized.floatActionButtonSize,
         child: ElevatedButton(
           onPressed: () {
-            BlocProvider.of<MainPageCubit>(context).bottomSheetAddTaskMethod(
+            context.read<GlobalManageCubit>().bottomSheetAddTaskMethod(
                 context,
                 titleController: _titleController,
                 subtitleController: _subtitleController);

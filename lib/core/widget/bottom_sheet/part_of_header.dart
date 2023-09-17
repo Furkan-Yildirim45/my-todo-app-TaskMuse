@@ -1,4 +1,4 @@
-part of"main_bottom_sheet.dart";
+part of'main_bottom_sheet.dart';
 
 class _BaseSheetHeaderComponent extends StatelessWidget
     with _BaseSheetHeaderComponentUtility {
@@ -29,7 +29,7 @@ class _BaseSheetHeaderComponent extends StatelessWidget
                       size: context.iconSize.large,
                     )),
                 onTap: () {
-                  Navigator.of(context).pop<bool>(true);
+                  Navigator.of(context).pop();
                 }),
           ),
         ]

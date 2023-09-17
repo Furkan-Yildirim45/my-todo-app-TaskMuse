@@ -18,7 +18,7 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
     };
     return TaskModel(
       color: fields[0] as String,
-      title: fields[1] as String,
+      title: fields[1] as String?,
       date: fields[2] as String?,
       isReminderActive: fields[3] as bool,
       isComplete: fields[4] as bool,

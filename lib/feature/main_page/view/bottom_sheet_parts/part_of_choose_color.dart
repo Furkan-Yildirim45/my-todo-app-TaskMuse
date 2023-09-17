@@ -9,10 +9,9 @@ class _ChooseColor extends StatefulWidget {
 }
 
 class _ChooseColorState extends State<_ChooseColor> {
-  double visibleStartIndex = 0;
-  double totalBoxCount = 10;
   late final ScrollController _scrollController;
-  final int initVisibleCount = 5;
+  double progressValue = 0;
+  int totalBoxCount = 10;
 
   @override
   void initState() {
@@ -22,9 +21,11 @@ class _ChooseColorState extends State<_ChooseColor> {
   }
 
   void _scrollListener() {
+    double scrollPosition = _scrollController.position.pixels;
+    double maxScrollExtent = _scrollController.position.maxScrollExtent;
+    double progress = scrollPosition / maxScrollExtent;
     setState(() {
-      var stickBarOffsetSliderValue = context.sized.dynamicHeigth(0.07745);
-      visibleStartIndex = (_scrollController.offset / stickBarOffsetSliderValue);
+      progressValue = progress;
     });
   }
 
@@ -32,53 +33,74 @@ class _ChooseColorState extends State<_ChooseColor> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: context.padding.topOnlyNormal,
-          child: SizedBox(
-            height: context.sized.floatActionButtonSize,
-            width: context.sized.width,
-            child: ListView.builder(
-              controller: _scrollController,
-              itemCount: totalBoxCount.toInt(),
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return _ColorsOfChooseColorCircleWidget(index: index, totalBoxCount: totalBoxCount.toInt());
-              },
-            ),
-          ),
-        ),
+        _colorButtonListView(context),
         _stickBarOfChooseColor(context),
       ],
     );
   }
 
-  Container _stickBarOfChooseColor(BuildContext context) {
-    return Container(
-        margin: context.padding.topOnlyNormal,
-        color: Colors.black12,
-        width: context.sized.width,
-        height: context.sized.smallValue,
-        child: Stack(
-          children: [
-            FractionallySizedBox(
-              alignment: Alignment.centerLeft,
-              widthFactor:
-              (visibleStartIndex + initVisibleCount) / totalBoxCount,
-              child: Container(
-                height: context.sized.smallValue,
-                color: Colors.blue,
-              ),
-            ),
-          ],
+  Padding _colorButtonListView(BuildContext context) {
+    return Padding(
+        padding: context.padding.topOnlyNormal,
+        child: SizedBox(
+          height: context.sized.floatActionButtonSize,
+          width: context.sized.width,
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: totalBoxCount.toInt(),
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+            return _ColorsOfChooseColorCircleWidget(
+              index: index,
+              totalBoxCount: totalBoxCount.toInt(),
+              onTap: () {
+                _toggleColor(index);
+              },
+            );
+          },
+          ),
         ),
       );
+  }
+
+  Padding _stickBarOfChooseColor(BuildContext context) {
+    return Padding(
+        padding: context.padding.topOnlyNormal,
+        child: LinearProgressIndicator(
+          minHeight: context.sized.smallValue,
+          backgroundColor: Colors.black12,
+          value: progressValue,
+          color: Colors.blue,
+        ),
+      );
+  }
+
+  void _toggleColor(int index) {
+    setState(() {
+      if (GeneralDatas.personalColor![index].isActive == false) {
+        GeneralDatas.personalColor![index].isActive = true;
+        for (var tag in GeneralDatas.personalColor!) {
+          if (GeneralDatas.personalColor?.indexOf(tag) != index) {
+            tag.isActive = false;
+          }
+        }
+      } else if (GeneralDatas.personalColor![index].isActive == true) {
+        GeneralDatas.personalColor![index].isActive = true;
+        for (var tag in GeneralDatas.personalColor!) {
+          if (GeneralDatas.personalColor!.indexOf(tag) != index) {
+            tag.isActive = false;
+          }
+        }
+      }
+    });
   }
 }
 
 class _ColorsOfChooseColorCircleWidget extends StatefulWidget {
-  const _ColorsOfChooseColorCircleWidget({Key? key, required this.index, required this.totalBoxCount}) : super(key: key);
+  const _ColorsOfChooseColorCircleWidget({Key? key, required this.index, required this.totalBoxCount, required this.onTap}) : super(key: key);
   final int index;
   final int totalBoxCount;
+  final Function() onTap;
   @override
   State<_ColorsOfChooseColorCircleWidget> createState() => _ColorsOfChooseColorCircleWidgetState();
 }
@@ -93,10 +115,9 @@ class _ColorsOfChooseColorCircleWidgetState extends State<_ColorsOfChooseColorCi
       child: SizedBox(
         width: context.sized.floatActionButtonSize,
         height: context.sized.floatActionButtonSize,
-        child: GestureDetector(
-          onTap: () {
-            _toggleColor(widget.index);
-          },
+        child: InkWell(
+          borderRadius: BorderRadius.circular(context.sized.floatActionButtonSize / 2),
+          onTap: widget.onTap,
           child: Container(
             width: context.sized.floatActionButtonSize,
             height: context.sized.floatActionButtonSize,
@@ -133,24 +154,6 @@ class _ColorsOfChooseColorCircleWidgetState extends State<_ColorsOfChooseColorCi
         ),
       ),
     );
-  }
-  void _toggleColor(int index) {
-    if (GeneralDatas.personalColor![index].isActive == false) {
-      GeneralDatas.personalColor![index].isActive = true;
-      for (var tag in GeneralDatas.personalColor!) {
-        if (GeneralDatas.personalColor?.indexOf(tag) != index) {
-          tag.isActive = false;
-        }
-      }
-    } else if (GeneralDatas.personalColor![index].isActive == true) {
-      GeneralDatas.personalColor![index].isActive = true;
-      for (var tag in GeneralDatas.personalColor!) {
-        if (GeneralDatas.personalColor!.indexOf(tag) != index) {
-          tag.isActive = false;
-        }
-      }
-    }
-    setState(() {});
   }
 }
 
