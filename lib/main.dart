@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:task_muse/feature/get_started/view/get_started_page_view.dart';
+import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
 import 'package:task_muse/product/global/provider/global_manage_provider.dart';
 import 'package:task_muse/product/init/main_initialize.dart';
 import 'core/const/colors.dart';
 import 'core/theme/light_theme.dart';
 
 Future<void> main() async {
-  MainInitialize().hiveAndSingletonInit();
-  SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: AppColor.aquaticCool.getColor()));
+  final MainInitialize mainInitialize = MainInitialize();
+  await mainInitialize.hiveAndCacheManagerSingletonsInit();
+  mainInitialize.globalCubitAndLoadTaskInit();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: AppColor.aquaticCool.getColor()));
   runApp(
     Provider(
-      create: (BuildContext context) => GlobalManageProvider(),
+      create: (BuildContext context) => GlobalManageProvider.globalManageCubit,
       child: const Main(),
     ),
   );
@@ -27,7 +28,8 @@ class Main extends StatelessWidget {
     return MaterialApp(
       theme: LightTheme().theme,
       debugShowCheckedModeBanner: false,
-      home: const GetStartedPage(),
+      home: context.read<GlobalManageCubit>().isAccountActiveAndGoPage(),
     );
   }
 }
+

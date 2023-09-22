@@ -1,0 +1,5 @@
+
+
+enum CachingBoxes{
+  globalBox,
+}

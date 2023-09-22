@@ -10,7 +10,7 @@ class TaskModel {
   @HiveField(0)
   final String color;
   @HiveField(1)
-  final String? title;
+  String title;
   @HiveField(2)
   final String? date;
   @HiveField(3)
@@ -18,16 +18,16 @@ class TaskModel {
   @HiveField(4)
   bool isComplete;
   @HiveField(5)
-  final String? subTitle;
+  String tag;
   bool isSwiped;
 
   TaskModel({
      required this.color,
-     this.title,
+     required this.title,
+    required this.tag,
     this.date,
     this.isReminderActive = false,
     this.isComplete = false,
-    this.subTitle,
     this.isSwiped = false,
   });
 

@@ -16,7 +16,7 @@ class _GetStartedPageFloatButton extends StatelessWidget with _PageSentenceUtili
             shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                 borderRadius: context.border.smallBorderRadius))),
         onPressed: () {
-          context.route.navigatePush(const MainPage());
+          context.read<GlobalManageCubit>().accountActive(context);
         },
         child: Text(buttonText),
       ),

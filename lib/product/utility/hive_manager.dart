@@ -1,6 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_muse/core/const/hive_contants.dart';
 import 'package:task_muse/product/exception/cache_manager_exception.dart';
+import '../global/app_keys.dart';
 import '../model/task_model.dart';
 
 abstract class ICacheManager<T>{
@@ -82,9 +83,11 @@ class TaskCacheManager extends ICacheManager<TaskModel>{
   }
 }
 
-enum CachingKeys {
-  testKey,taskList,uiTestKey
-}
+
 
 
 ///dikkat:singleton yaparken üst classdan değişken degeri alamazsın cünkü singletonlar staticlerdir! bu yuzden deger alamaz sen burda bunu bu sekilde yapmalısın
+
+
+///aynı boxun altında farklı keylerde saklıyorum ve ben bu boxın altında metotlarda key isteyerek o valuemi o kutunun altında o kategorinin altında saklıyabilirim!
+///

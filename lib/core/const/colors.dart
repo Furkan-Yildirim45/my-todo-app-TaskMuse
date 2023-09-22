@@ -2,7 +2,7 @@
 import 'dart:ui';
 
 enum AppColor{
-  boatSwain,aquaticCool,dragonFly,enoki,mikadoYellow,monastic,walledGarden,candyDrop,dandelionWish,atomicOrange,
+  boatSwain,aquaticCool,dragonFly,enoki,mikadoYellow,monastic,walledGarden,candyDrop,dandelionWish,atomicOrange,defaultColor,
 }
 
 extension AppColorExtension on AppColor{
@@ -28,6 +28,8 @@ extension AppColorExtension on AppColor{
         return const Color(0xffe4b767);
       case AppColor.atomicOrange:
         return const Color(0xfffc8404);
+      case AppColor.defaultColor:
+        return const Color(0xff808080);
     }
   }
 }

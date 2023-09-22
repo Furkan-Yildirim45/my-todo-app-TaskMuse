@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/general.dart';
 import 'package:task_muse/product/extension/context/navigation.dart';
 import 'package:task_muse/product/extension/context/padding.dart';
 import 'package:task_muse/product/extension/context/size.dart';
+import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
 import '../../../core/const/colors.dart';
 import '../../main_page/view/main_page_view.dart';
 

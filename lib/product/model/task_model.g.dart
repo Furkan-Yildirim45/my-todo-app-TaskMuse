@@ -18,11 +18,11 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
     };
     return TaskModel(
       color: fields[0] as String,
-      title: fields[1] as String?,
+      title: fields[1] as String,
+      tag: fields[5] as String,
       date: fields[2] as String?,
       isReminderActive: fields[3] as bool,
       isComplete: fields[4] as bool,
-      subTitle: fields[5] as String?,
     );
   }
 
@@ -41,7 +41,7 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
       ..writeByte(4)
       ..write(obj.isComplete)
       ..writeByte(5)
-      ..write(obj.subTitle);
+      ..write(obj.tag);
   }
 
   @override

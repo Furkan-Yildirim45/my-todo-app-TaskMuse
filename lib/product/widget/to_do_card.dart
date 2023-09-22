@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/product/extension/context/duration.dart';
 import 'package:task_muse/product/extension/context/padding.dart';
 import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
+import 'package:task_muse/product/global/cubit/global_manage_state.dart';
 import 'package:task_muse/product/model/task_model.dart';
 import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/general.dart';
@@ -28,35 +29,60 @@ class ToDoCard extends StatefulWidget {
 class _ToDoCardState extends State<ToDoCard> with _TodoCardUtility {
   @override
   Widget build(BuildContext context) {
+    return BlocSelector<GlobalManageCubit, GlobalManageState, bool>(
+      selector: (state) {
+        return state.isAnyCardSwiped ?? false;
+      },
+      builder: (context, state) {
+        return AnimatedContainer(
+          transform: containerTransform(),
+          duration: context.duration.durationFast,
+          margin: _containerMargin(),
+          height: context.sized.dynamicHeigth(0.1),
+          decoration: _mainContainerDecoration(context),
+          child: ElevatedButton(
+            style: _elevatedButtonStyle(context),
+            onLongPress: () {
+              context.read<GlobalManageCubit>().changeIsSwiped(widget.index);
+            },
+            onPressed: state ? () {context.read<GlobalManageCubit>().makeIsSwipedFalse();} : null,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //icon place
+                  _circleColorAndIconButtonPlace(context),
+                  _taskTitleAndDate(context),
+                  _reminderButton(
+                    context,
+                  ),
+                ]),
+          ),
+        );
+      },
+    );
+  }
 
-    return AnimatedContainer(
-      transform: containerTransform(),
-      duration: context.duration.durationFast,
-      margin: _containerMargin(),
-      height: context.sized.dynamicHeigth(0.1),
-      decoration: _mainContainerDecoration(context),
-      child: ElevatedButton(
-        style: _elevatedButtonStyle(context),
-        onLongPress: () {
-          context.read<GlobalManageCubit>().changeIsSwiped(widget.index);
-        },
-        onPressed: () {
-          context.read<GlobalManageCubit>().makeIsSwipedFalse();
-        },
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //icon place
-              _circleColorAndIconButtonPlace(context),
-              _taskTitleAndDate(context),
-              _reminderButton(context),
-            ]),
+  Padding _reminderButton(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(right: context.sized.dynamicHeigth(0.025)),
+      child: CustomCircleButtonWithField(
+        size: 45,
+        onTap: () {context.read<GlobalManageCubit>().changeReminder(widget.index);setState(() {});},
+        backgroundColor: Colors.transparent,
+        child: Icon(
+          Icons.notifications,
+          color: (widget.taskItems?[widget.index].isReminderActive ?? false)
+              ? AppColor.mikadoYellow.getColor()
+              : AppColor.defaultColor.getColor(),
+          size: context.iconSize.normal,
+        ),
       ),
     );
   }
 }
 
 mixin _TodoCardUtility on State<ToDoCard> {
+
   Matrix4 containerTransform() => (widget.taskItems?[widget.index].isSwiped ?? false)
       ? Matrix4.translationValues(-context.sized.dynamicHeigth(0.15), 0, 0)
       : Matrix4.translationValues(0, 0, 0);
@@ -87,31 +113,6 @@ mixin _TodoCardUtility on State<ToDoCard> {
             borderRadius: context.border.largeBorderRadius)));
   }
 
-  Padding _reminderButton(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(right: context.sized.dynamicHeigth(0.025)),
-      child: CustomCircleButtonWithField(
-        size: 50,
-        onTap: () async {
-          ///todo:burad bi sıkıntı var o da güncelleme ve elemanı ekliyor galiba buna bir bak!
-          setState(() {
-            widget.taskItems?[widget.index].isReminderActive =
-                !(widget.taskItems?[widget.index].isReminderActive ?? true);
-          });
-          // await TaskCacheManager.instance.putItems(widget.taskItems);
-        },
-        backgroundColor: Colors.transparent,
-        child: Icon(
-          Icons.notifications,
-          size: context.iconSize.normal,
-          color: (widget.taskItems?[widget.index].isReminderActive ?? false)
-              ? AppColor.mikadoYellow.getColor()
-              : Colors.grey,
-        ),
-      ),
-    );
-  }
-
   Expanded _taskTitleAndDate(BuildContext context) {
     return Expanded(
       child: Column(
@@ -127,9 +128,15 @@ mixin _TodoCardUtility on State<ToDoCard> {
                         ? TextDecoration.lineThrough
                         : TextDecoration.none),
           ),
-          Text(
-            widget.taskItems?[widget.index].date ?? "",
-            style: context.general.textTheme.titleMedium,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Tag Place',style: context.general.textTheme.titleMedium?.copyWith(color: Colors.grey),),
+              Text(
+                widget.taskItems?[widget.index].date ?? "",
+                style: context.general.textTheme.titleMedium,
+              ),
+            ],
           ),
         ],
       ),
@@ -146,9 +153,9 @@ mixin _TodoCardUtility on State<ToDoCard> {
         },
         size: context.sized.dynamicHeigth(0.05),
         borderColor:
-            TaskModel.stringToColor(widget.taskItems?[widget.index].color ?? "0xff000000"), //todo: geçici atıyorum null olup olmadıgına bakılıcak!
+            TaskModel.stringToColor(widget.taskItems?[widget.index].color ?? "${AppColor.defaultColor}"),
         backgroundColor: (widget.taskItems?[widget.index].isComplete ?? false)
-            ? TaskModel.stringToColor(widget.taskItems?[widget.index].color ?? "0xff000000") //todo: geçici atıyorum null olup olmadıgına bakılıcak!
+            ? TaskModel.stringToColor(widget.taskItems?[widget.index].color ?? "${AppColor.defaultColor}")
             : Colors.white,
         child: Icon(
           Icons.check,

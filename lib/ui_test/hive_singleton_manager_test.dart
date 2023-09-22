@@ -3,6 +3,8 @@ import 'package:task_muse/core/const/colors.dart';
 import 'package:task_muse/product/model/task_model.dart';
 import 'package:task_muse/product/utility/hive_manager.dart';
 
+import '../product/global/app_keys.dart';
+
 class HiveSingletonManagerTest extends StatefulWidget {
   const HiveSingletonManagerTest({Key? key}) : super(key: key);
 
@@ -35,7 +37,7 @@ class _HiveSingletonManagerTestState extends State<HiveSingletonManagerTest> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          TaskModel task = TaskModel(title: "test task",subTitle: "subtitle",date: "date",color: TaskModel.colorToString(AppColor.atomicOrange.getColor()));
+          TaskModel task = TaskModel(title: "test task",date: "date",color: TaskModel.colorToString(AppColor.atomicOrange.getColor()), tag: 'Meeting');
           await _instance.addItem(task);
           setState(() {});
         },
