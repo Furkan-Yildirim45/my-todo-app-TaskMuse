@@ -1,5 +1,5 @@
 
-part of'../main_page_view.dart';
+part of'../home_view.dart';
 
 class _PageTopComponent extends StatelessWidget with _PageOfTopComponentUtility{
   _PageTopComponent();

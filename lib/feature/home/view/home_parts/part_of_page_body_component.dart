@@ -1,4 +1,4 @@
-part of '../main_page_view.dart';
+part of '../home_view.dart';
 
 class _PageBodyComponent extends StatelessWidget with _PageOfBodyUtility {
   _PageBodyComponent({Key? key}) : super(key: key);

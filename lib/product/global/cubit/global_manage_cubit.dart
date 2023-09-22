@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/feature/get_started/view/get_started_page_view.dart';
-import 'package:task_muse/feature/main_page/view/main_page_view.dart';
 import 'package:task_muse/product/extension/context/navigation.dart';
 import 'package:task_muse/product/global/app_keys.dart';
 import 'package:task_muse/product/model/global_model.dart';
 import 'package:task_muse/product/utility/global_hive_manager.dart';
-import '../../../core/general_datas.dart';
+import '../../../core/const/colors.dart';
+import '../../../feature/home/model/personal_tag_model.dart';
+import '../../../feature/main_page/view/main_page.dart';
 import '../../model/task_model.dart';
 import '../../utility/hive_manager.dart';
 import 'global_manage_state.dart';
 
 class GlobalManageCubit extends Cubit<GlobalManageState> {
   GlobalManageCubit() : super(GlobalManageState());
+
+  void changeBottomNavBarPage(BuildContext context,int currentIndex){
+
+  }
 
   Future<void> changeReminder(int index) async {
     final tempList = state.taskItems ?? [];
@@ -86,23 +91,28 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
     emit(state.copyWith(isLoading: false));
   }
 
-  Future<void> bottomSheetAddTaskMethod(BuildContext context, {required TextEditingController titleController, required TextEditingController subtitleController}) async {
+  Future<void> bottomSheetAddTaskMethod(BuildContext context, {required TextEditingController titleController}) async {
     final DateTime now = DateTime.now();
     final String dateNow = "${now.day}.${now.month}.${now.year}";
     final updatedList = state.taskItems ?? [];
+    final tempList = state.personalTags ?? [];
+    final int tempIndex = tempList.indexWhere((element) => element.isActive);
     emit(state.copyWith(isLoading: true));
     if (titleController.text.isNotEmpty) {
       final task = TaskModel(
         title: titleController.text,
         date: dateNow,
-        color: TaskModel.colorToString(_selectedColor() ?? Colors.white), tag: 'Tag Place',
+        color: TaskModel.colorToString(_selectedColor() ?? Colors.white),
+        tag: tempList[tempIndex].tag,
       );
       updatedList.add(task);
-      emit(state.copyWith(taskItems: updatedList,isLoading: false));
+      tempList[tempIndex].isActive = false;
+      emit(state.copyWith(taskItems: updatedList,isLoading: false,personalTags: tempList));
       await TaskCacheManager.instance.addItem(task).then((value) {
         context.route.pop();
       });
     }
+    emit(state.copyWith(isLoading: false));
   }
 
   Future<void> deleteTaskItem({required int index,required BuildContext context}) async {
@@ -120,8 +130,8 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
   }
 
   Color? _selectedColor(){
-    if(GeneralDatas.personalColor?.isNotEmpty ?? false){
-      for(var value in GeneralDatas.personalColor!){
+    if(state.personalTags?.isNotEmpty ?? false){
+      for(var value in state.personalTags!){
         if(value.isActive) return value.color;
       }
     }
@@ -159,6 +169,49 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
     emit(state.copyWith(isLoading: false));
   }
 
+  void setDefaultPersonalTags(){
+    emit(state.copyWith(isLoading: true));
+    List<PersonalTagModel>? tempList = [
+      PersonalTagModel(tag: "Meeting", color: AppColor.aquaticCool.getColor()),
+      PersonalTagModel(tag: "Mission", color: AppColor.candyDrop.getColor()),
+      PersonalTagModel(tag: "Sports and Exercise", color: AppColor.mikadoYellow.getColor()),
+      PersonalTagModel(tag: "Cleaning", color: AppColor.monastic.getColor()),
+      PersonalTagModel(tag: "Shopping", color: AppColor.walledGarden.getColor()),
+      PersonalTagModel(tag: "Bills", color: AppColor.dragonFly.getColor()),
+      PersonalTagModel(tag: "Hobbies", color: AppColor.red.getColor()),
+      PersonalTagModel(tag: "Homework", color: AppColor.pink.getColor()),
+      PersonalTagModel(tag: "Cooking", color: AppColor.purple.getColor()),
+      PersonalTagModel(tag: "Trip Planning", color: AppColor.teal.getColor()),
+    ];
+    emit(state.copyWith(personalTags: tempList,isLoading: false));
+  }
+
+  void toggleTag(int index){
+    emit(state.copyWith(isLoading: true));
+    final tempList = state.personalTags ?? [];
+    if(tempList[index].isActive){
+      tempList[index].isActive = true;
+      for(var tag in tempList){
+        if(tempList.indexOf(tag) != index){
+          tag.isActive = false;
+        }
+      }
+    }
+    else if(state.personalTags?[index].isActive == false){
+      tempList[index].isActive = true;
+      for(var tag in tempList){
+        if(tempList.indexOf(tag) != index){
+          tag.isActive = false;
+        }
+      }
+    }
+    emit(state.copyWith(isLoading: false));
+  }
+
   bool get checkTaskItemsNotNullAndEmpty => ((state.taskItems?.isNotEmpty ?? false) && state.taskItems != null) ? true : false;
 }
 
+//todo:burası tag place abi titlenin altı; ben burdaki kısımda dk,saat,gün,ay,yıl alıcam aynen! okeyiz bunda
+//daha sonra tasks kısmında şey olucak : işte bugunun tasksları,yarının tasksları olucak en alttaki digerler şeklinde yapabilirim
+//üstte searh kısmı olucak,filtreleme
+//o sekilde!

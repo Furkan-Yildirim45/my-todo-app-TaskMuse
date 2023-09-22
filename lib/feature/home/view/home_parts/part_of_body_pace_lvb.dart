@@ -1,4 +1,4 @@
-part of "../main_page_view.dart";
+part of "../home_view.dart";
 
 class _BodyPlaceListViewBuilder extends StatelessWidget
     with _BodyPlaceLVBUtility,MainAlertDialog{
