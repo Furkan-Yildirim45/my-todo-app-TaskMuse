@@ -9,7 +9,10 @@ class TasksPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      appBar: AppBar(
+        leading: const BackButton(),
+      ),
     );
   }
 }

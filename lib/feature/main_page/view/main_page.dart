@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/feature/tasks/view/tasks_page_view.dart';
+import 'package:task_muse/product/extension/context/duration.dart';
 import 'package:task_muse/product/extension/context/icon_size.dart';
 
 import '../../../core/const/colors.dart';
@@ -13,9 +14,19 @@ import '../../home/view/home_view_bottom_sheet.dart';
 
 part 'part_of_page_float_button.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  PageController pageController = PageController();
+
+  void _changePageViewPage(int index,BuildContext context){
+    pageController.animateToPage(index, duration: context.duration.durationNormal, curve: Curves.fastLinearToSlowEaseIn);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +36,16 @@ class MainPage extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: const _MainPageFloatActionButton(),
         body: PageView(
+          controller: pageController,
+          physics: const NeverScrollableScrollPhysics(),
           children: const [
             HomeView(),
             TasksPageView(),
           ],
         ),
-        bottomNavigationBar: const BottomNavBar(),
+        bottomNavigationBar: BottomNavBar(onTap: (int index) { _changePageViewPage(index, context); },),
       ),
     );
   }
 }
 
-///todo: ortak bottomnavbar için abi burda pageview yapıyorum!

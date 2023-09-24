@@ -15,10 +15,6 @@ import 'global_manage_state.dart';
 class GlobalManageCubit extends Cubit<GlobalManageState> {
   GlobalManageCubit() : super(GlobalManageState());
 
-  void changeBottomNavBarPage(BuildContext context,int currentIndex){
-
-  }
-
   Future<void> changeReminder(int index) async {
     final tempList = state.taskItems ?? [];
     state.copyWith(isLoading: true);
@@ -66,7 +62,6 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
       swipedValue = tempList[state.changedCardIndex!].isSwiped;
     }
     emit(state.copyWith(taskItems: tempList,changedCardIndex: cardIndex,isAnyCardSwiped: swipedValue));
-    print(swipedValue);
   }
 
   bool get swipedController => state.isAnyCardSwiped!;
@@ -77,7 +72,6 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
       tempList[state.changedCardIndex!].isSwiped = false;
     }
     emit(state.copyWith(taskItems: tempList,isAnyCardSwiped: false));
-    print(swipedController);
   }
 
   void setDefaultTaskItems()  {
