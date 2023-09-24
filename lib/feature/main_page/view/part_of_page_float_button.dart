@@ -1,5 +1,5 @@
 
-part of"../main_page_view.dart";
+part of'main_page.dart';
 
 class _MainPageFloatActionButton extends StatefulWidget {
   const _MainPageFloatActionButton({Key? key}) : super(key: key);
@@ -24,7 +24,7 @@ class _MainPageFloatActionButtonState extends State<_MainPageFloatActionButton>
     showCustomMainBottomSheet<GlobalManageCubit>(
       cubit: GlobalManageProvider.globalManageCubit,
       context: context,
-      child: const MainPageBottomSheet(),
+      child: MainPageBottomSheet(),
     );
   }
 }

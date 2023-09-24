@@ -131,7 +131,7 @@ mixin _TodoCardUtility on State<ToDoCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Tag Place',style: context.general.textTheme.titleMedium?.copyWith(color: Colors.grey),),
+              Text(widget.taskItems?[widget.index].tag ?? "",style: context.general.textTheme.titleMedium?.copyWith(color: Colors.grey),),
               Text(
                 widget.taskItems?[widget.index].date ?? "",
                 style: context.general.textTheme.titleMedium,

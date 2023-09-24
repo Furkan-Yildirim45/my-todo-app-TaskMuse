@@ -23,6 +23,7 @@ class MainInitialize{
     _globalManageCubit = GlobalManageCubit();
     _globalManageCubit.setDefaultTaskItems();
     _globalManageCubit.setDefaultGlobalModel();
+    _globalManageCubit.setDefaultPersonalTags();
     GlobalManageProvider.init(_globalManageCubit);
   }
 

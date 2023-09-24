@@ -1,29 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:task_muse/core/general_datas.dart';
+import 'package:task_muse/core/widget/info_box/info_box.dart';
 import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/general.dart';
 import 'package:task_muse/product/extension/context/padding.dart';
 import 'package:task_muse/product/extension/context/size.dart';
 import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
+
+import '../../../product/global/cubit/global_manage_state.dart';
 import '../../../product/widget/category_button.dart';
 
-part 'bottom_sheet_parts/part_of_choose_color.dart';
 part 'bottom_sheet_parts/part_of_tags_place.dart';
 
-class MainPageBottomSheet extends StatefulWidget {
-  const MainPageBottomSheet({
+class MainPageBottomSheet extends StatelessWidget with _BottomSheetUtility{
+  MainPageBottomSheet({
     super.key,
   });
 
-  @override
-  State<MainPageBottomSheet> createState() => _MainPageBottomSheetState();
-}
-
-class _MainPageBottomSheetState extends State<MainPageBottomSheet>
-    with _BottomSheetUtility {
-  late final TextEditingController _titleController = TextEditingController();
-  late final TextEditingController _subtitleController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +26,13 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet>
       child: Column(
         children: [
           _addNewTaskText(context),
-          Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _titleTextFormField(),
-                _descriptionTextFormField(),
-                _categoryText(),
-                const _TagsPlace(),
-                _setColorText(context),
-                const _ChooseColor(),
-              ],
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _titleTextFormField(),
+              _categoryText(context),
+              const _TagsPlace(),
+            ],
           ),
           const Spacer(),
           _addTaskButton(context)
@@ -52,30 +41,10 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet>
     );
   }
 
-  Padding _setColorText(BuildContext context) {
+  Padding _categoryText(BuildContext context) {
     return Padding(
-      padding: context.padding.topOnlyMedium,
-      child: Text(
-        setColorText,
-        style: context.general.textTheme.titleSmall,
-      ),
-    );
-  }
-
-  Padding _categoryText() {
-    return Padding(
-      padding: context.padding.topOnlyMedium,
+      padding: context.padding.topOnlyNormal,
       child: Text(categoryText),
-    );
-  }
-
-  TextFormField _descriptionTextFormField() {
-    return TextFormField(
-      controller: _subtitleController,
-      maxLines: 1,
-      decoration: InputDecoration(
-        hintText: yourDescriptionText,
-      ),
     );
   }
 
@@ -86,7 +55,7 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet>
       decoration: InputDecoration(
         hintText: addTaskTitle,
       ),
-      maxLength: 50,
+      maxLength: 100,
     );
   }
 
@@ -98,10 +67,7 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet>
         height: context.sized.floatActionButtonSize,
         child: ElevatedButton(
           onPressed: () {
-            context.read<GlobalManageCubit>().bottomSheetAddTaskMethod(
-                context,
-                titleController: _titleController,
-                subtitleController: _subtitleController);
+            context.read<GlobalManageCubit>().bottomSheetAddTaskMethod(context,titleController: _titleController);
           },
           style: ButtonStyle(
               shape: MaterialStatePropertyAll(RoundedRectangleBorder(
@@ -116,8 +82,7 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet>
     );
   }
 
-  Text _addNewTaskText(BuildContext context) =>
-      Text(addNewTaskText, style: context.general.textTheme.titleLarge);
+  Text _addNewTaskText(BuildContext context) => Text(addNewTaskText, style: context.general.textTheme.titleLarge);
 }
 
 mixin _BottomSheetUtility {
@@ -125,9 +90,5 @@ mixin _BottomSheetUtility {
   final String addTaskText = "Add task";
   final String tampDateText = "Temp Date!";
   final String addTaskTitle = "Add Task Title";
-  final String yourDescriptionText = "Description your task";
   final String categoryText = "Category";
-  final String setColorText = "Set Color";
 }
-
-// baba chatoya bi entegrasyon seysi yaptırdım ona bi bak!
