@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_muse/feature/tasks/cubit/tasks_cubit.dart';
 import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
 import 'package:task_muse/product/global/provider/global_manage_provider.dart';
 import 'package:task_muse/product/init/main_initialize.dart';
@@ -13,8 +14,11 @@ Future<void> main() async {
   mainInitialize.globalCubitAndLoadTaskInit();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: AppColor.aquaticCool.getColor()));
   runApp(
-    Provider(
-      create: (BuildContext context) => GlobalManageProvider.globalManageCubit,
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => GlobalManageProvider.globalManageCubit,),
+        BlocProvider(create: (context) => TasksCubit(),)
+      ],
       child: const Main(),
     ),
   );
@@ -33,3 +37,16 @@ class Main extends StatelessWidget {
   }
 }
 
+/* //bu kısım globalContext için!
+Future<void> main() async {
+  final MainInitialize mainInitialize = MainInitialize();
+  await mainInitialize.hiveAndCacheManagerSingletonsInit();
+  mainInitialize.globalCubitAndLoadTaskInit();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: AppColor.aquaticCool.getColor()));
+  runApp(
+    Provider(
+      create: (BuildContext context) => GlobalManageProvider.globalManageCubit,
+      child: const Main(),
+    ),
+  );
+}*/
