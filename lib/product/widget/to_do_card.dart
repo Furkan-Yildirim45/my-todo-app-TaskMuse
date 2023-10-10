@@ -16,9 +16,9 @@ class ToDoCard extends StatefulWidget {
   const ToDoCard({
     super.key,
     required this.index,
-    required this.taskItems,
+    required this.taskItems, required this.isTaskPageActive,
   });
-
+  final bool isTaskPageActive;
   final int index;
   final List<TaskModel>? taskItems;
 
@@ -166,3 +166,6 @@ mixin _TodoCardUtility on State<ToDoCard> {
     );
   }
 }
+
+//todo: saat kısmını abi eger o gün içerisinde ise ve tasks page de ise yazıldıgı tarih yerine o günün hangi saatinde işaretliyse
+//data o zamanı göstersin!

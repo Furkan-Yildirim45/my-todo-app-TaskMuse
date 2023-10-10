@@ -19,6 +19,10 @@ class TaskModel {
   bool isComplete;
   @HiveField(5)
   String tag;
+  @HiveField(6)
+  int? alarmHour;
+  @HiveField(7)
+  int? alarmMinute;
   bool isSwiped;
 
   TaskModel({
@@ -29,6 +33,8 @@ class TaskModel {
     this.isReminderActive = false,
     this.isComplete = false,
     this.isSwiped = false,
+    this.alarmHour,
+    this.alarmMinute,
   });
 
   static String colorToString(Color color) {

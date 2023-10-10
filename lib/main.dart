@@ -17,7 +17,7 @@ Future<void> main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => GlobalManageProvider.globalManageCubit,),
-        BlocProvider(create: (context) => TasksCubit(),)
+        BlocProvider(create: (context) => TasksCubit(),),
       ],
       child: const Main(),
     ),
