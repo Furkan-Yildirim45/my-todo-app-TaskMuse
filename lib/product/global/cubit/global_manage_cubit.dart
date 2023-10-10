@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/feature/get_started/view/get_started_page_view.dart';
+import 'package:task_muse/feature/home/model/personal_alarm_model.dart';
 import 'package:task_muse/product/extension/context/navigation.dart';
 import 'package:task_muse/product/global/app_keys.dart';
 import 'package:task_muse/product/model/global_model.dart';
@@ -85,7 +86,7 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
     emit(state.copyWith(isLoading: false));
   }
 
-  Future<void> bottomSheetAddTaskMethod(BuildContext context, {required TextEditingController titleController}) async {
+  Future<void> bottomSheetAddTaskMethod(BuildContext context, {required TextEditingController titleController,int? hour,int? minute}) async {
     final DateTime now = DateTime.now();
     final String dateNow = "${now.day}.${now.month}.${now.year}";
     final updatedList = state.taskItems ?? [];
@@ -98,6 +99,8 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
         date: dateNow,
         color: TaskModel.colorToString(_selectedColor() ?? Colors.white),
         tag: tempList[tempIndex].tag,
+        alarmHour: hour,
+        alarmMinute: minute,
       );
       updatedList.add(task);
       tempList[tempIndex].isActive = false;
@@ -107,6 +110,8 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
       });
     }
     emit(state.copyWith(isLoading: false));
+    print(hour);
+    print(minute);
   }
 
   Future<void> deleteTaskItem({required int index,required BuildContext context}) async {
@@ -203,6 +208,70 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
   }
 
   bool get checkTaskItemsNotNullAndEmpty => ((state.taskItems?.isNotEmpty ?? false) && state.taskItems != null) ? true : false;
+
+  void setDefaultAlarmHourItemsValue() {
+    emit(state.copyWith(isLoading: true));
+    var tempList = state.personalAlarmHourItems ?? [];
+    tempList = PersonalAlarmModel.generateItems(count: 24);
+    emit(state.copyWith(personalAlarmHourItems: tempList,isLoading: false));
+  }
+  void setDefaultAlarmMinuteItemsValue() {
+    emit(state.copyWith(isLoading: true));
+    var tempList = state.personalAlarmMinutesItems ?? [];
+    tempList = PersonalAlarmModel.generateItems(count: 60);
+    emit(state.copyWith(personalAlarmMinutesItems: tempList,isLoading: false));
+  }
+
+  void toggleAlarmMinutesItem(int index){
+    emit(state.copyWith(isLoading: true));
+    final tempList = state.personalAlarmMinutesItems ?? [];
+    if(tempList[index].isSelected){
+      tempList[index].isSelected = true;
+      for(var alarm in tempList){
+        if(tempList.indexOf(alarm) != index){
+          alarm.isSelected = false;
+        }
+      }
+    }
+    else if(state.personalAlarmMinutesItems?[index].isSelected == false){
+      tempList[index].isSelected = true;
+      for(var alarm in tempList){
+        if(tempList.indexOf(alarm) != index){
+          alarm.isSelected = false;
+        }
+      }
+    }
+    emit(state.copyWith(isLoading: false));
+  }
+  void toggleAlarmHourItems(int index){
+    emit(state.copyWith(isLoading: true));
+    final tempList = state.personalAlarmHourItems ?? [];
+    if(tempList[index].isSelected){
+      tempList[index].isSelected = true;
+      for(var alarm in tempList){
+        if(tempList.indexOf(alarm) != index){
+          alarm.isSelected = false;
+        }
+      }
+    }
+    else if(state.personalAlarmHourItems?[index].isSelected == false){
+      tempList[index].isSelected = true;
+      for(var alarm in tempList){
+        if(tempList.indexOf(alarm) != index){
+          alarm.isSelected = false;
+        }
+      }
+    }
+    emit(state.copyWith(isLoading: false));
+  }
+
+  int queryList(List<bool> list,bool searchedValue){
+    int tempIndex = -1;
+    if(list.contains(searchedValue)){
+       tempIndex = list.indexWhere((element) => element == true);
+    }
+    return tempIndex;
+  } //todo: bi ara bu metodu incele de değişebilen elemanlar ile geniş bi sorgu yapılabilir şekilde hazırla!
 }
 
 //todo:burası tag place abi titlenin altı; ben burdaki kısımda dk,saat,gün,ay,yıl alıcam aynen! okeyiz bunda

@@ -70,6 +70,7 @@ class _BodyPlaceListViewBuilder extends StatelessWidget
     return SizedBox(
       width: (context.sized.width - context.sized.mediumValue * 2),
       child: ToDoCard(
+        isTaskPageActive: false,
         index: index,
         taskItems: state.taskItems,
       ),

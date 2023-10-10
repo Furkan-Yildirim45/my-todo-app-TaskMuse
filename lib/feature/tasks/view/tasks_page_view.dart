@@ -35,7 +35,13 @@ class _TasksPageViewState extends State<TasksPageView> with _PageUtility,MainAle
   @override
   void initState() {
     super.initState();
-    taskItems = context.read<TasksCubit>().getDefaultTaskItems() ?? [];
+    getItemsFromGlobalCubit();
+  }
+
+  void getItemsFromGlobalCubit(){
+    if(TaskCacheManager.instance.getValues?.isNotEmpty ?? false){
+      taskItems = TaskCacheManager.instance.getValues!;
+    }
   }
 
   void findAndSetItems(String userSearchValue) {
@@ -174,6 +180,7 @@ mixin _PageUtility on State<TasksPageView> {
     return SizedBox(
       width: (context.sized.width - context.sized.mediumValue * 2),
       child: ToDoCard(
+        isTaskPageActive: true,
         index: index,
         taskItems: taskItems,
       ),
@@ -181,5 +188,6 @@ mixin _PageUtility on State<TasksPageView> {
   }
 }
 
-///todo: knk cubitte ekstradan taskItems tutma tasksstate de!!!! isLoadingi de Globaldan alabilirim!
 ///todo: en son todoCard içi farklılıkları yapıcam önce bu üsttekiler!
+///todo: knk burda güne göre hazır filtreleme yapıcaz ya burdaki metota ise ben bunu tarihe göre hazılıcam! ama burda düşünem gereken birşey var o da tarihlere göre
+///o takvimi nasıl yapacagım?

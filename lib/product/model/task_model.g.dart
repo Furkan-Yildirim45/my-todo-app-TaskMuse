@@ -23,13 +23,15 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
       date: fields[2] as String?,
       isReminderActive: fields[3] as bool,
       isComplete: fields[4] as bool,
+      alarmHour: fields[6] as int?,
+      alarmMinute: fields[7] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, TaskModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.color)
       ..writeByte(1)
@@ -41,7 +43,11 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
       ..writeByte(4)
       ..write(obj.isComplete)
       ..writeByte(5)
-      ..write(obj.tag);
+      ..write(obj.tag)
+      ..writeByte(6)
+      ..write(obj.alarmHour)
+      ..writeByte(7)
+      ..write(obj.alarmMinute);
   }
 
   @override
