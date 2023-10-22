@@ -86,7 +86,7 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
     emit(state.copyWith(isLoading: false));
   }
 
-  Future<void> bottomSheetAddTaskMethod(BuildContext context, {required TextEditingController titleController,int? hour,int? minute}) async {
+  Future<void> bottomSheetAddTaskMethod(BuildContext context, {required TextEditingController titleController}) async {
     final DateTime now = DateTime.now();
     final String dateNow = "${now.day}.${now.month}.${now.year}";
     final updatedList = state.taskItems ?? [];
@@ -99,8 +99,8 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
         date: dateNow,
         color: TaskModel.colorToString(_selectedColor() ?? Colors.white),
         tag: tempList[tempIndex].tag,
-        alarmHour: hour,
-        alarmMinute: minute,
+        alarmHour: searchTrueInList(state.personalAlarmHourItems),
+        alarmMinute: searchTrueInList(state.personalAlarmMinutesItems),
       );
       updatedList.add(task);
       tempList[tempIndex].isActive = false;
@@ -110,8 +110,6 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
       });
     }
     emit(state.copyWith(isLoading: false));
-    print(hour);
-    print(minute);
   }
 
   Future<void> deleteTaskItem({required int index,required BuildContext context}) async {
@@ -190,18 +188,13 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
     final tempList = state.personalTags ?? [];
     if(tempList[index].isActive){
       tempList[index].isActive = true;
-      for(var tag in tempList){
-        if(tempList.indexOf(tag) != index){
-          tag.isActive = false;
-        }
-      }
     }
     else if(state.personalTags?[index].isActive == false){
       tempList[index].isActive = true;
-      for(var tag in tempList){
-        if(tempList.indexOf(tag) != index){
-          tag.isActive = false;
-        }
+    }
+    for(var tag in tempList){
+      if(tempList.indexOf(tag) != index){
+        tag.isActive = false;
       }
     }
     emit(state.copyWith(isLoading: false));
@@ -225,20 +218,15 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
   void toggleAlarmMinutesItem(int index){
     emit(state.copyWith(isLoading: true));
     final tempList = state.personalAlarmMinutesItems ?? [];
-    if(tempList[index].isSelected){
+    if(tempList[index].isSelected == false){
       tempList[index].isSelected = true;
-      for(var alarm in tempList){
-        if(tempList.indexOf(alarm) != index){
-          alarm.isSelected = false;
-        }
-      }
     }
-    else if(state.personalAlarmMinutesItems?[index].isSelected == false){
-      tempList[index].isSelected = true;
-      for(var alarm in tempList){
-        if(tempList.indexOf(alarm) != index){
-          alarm.isSelected = false;
-        }
+    else if(tempList[index].isSelected){
+      tempList[index].isSelected = false;
+    }
+    for(var item in tempList){
+      if(tempList.indexOf(item) != index){
+        item.isSelected = false;
       }
     }
     emit(state.copyWith(isLoading: false));
@@ -246,32 +234,29 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
   void toggleAlarmHourItems(int index){
     emit(state.copyWith(isLoading: true));
     final tempList = state.personalAlarmHourItems ?? [];
-    if(tempList[index].isSelected){
+    if(tempList[index].isSelected == false){
       tempList[index].isSelected = true;
-      for(var alarm in tempList){
-        if(tempList.indexOf(alarm) != index){
-          alarm.isSelected = false;
-        }
-      }
     }
-    else if(state.personalAlarmHourItems?[index].isSelected == false){
-      tempList[index].isSelected = true;
-      for(var alarm in tempList){
-        if(tempList.indexOf(alarm) != index){
-          alarm.isSelected = false;
-        }
+    else if(tempList[index].isSelected){
+      tempList[index].isSelected = false;
+    }
+    for(var item in tempList){
+      if(tempList.indexOf(item) != index){
+        item.isSelected = false;
       }
     }
     emit(state.copyWith(isLoading: false));
   }
 
-  int queryList(List<bool> list,bool searchedValue){
-    int tempIndex = -1;
-    if(list.contains(searchedValue)){
-       tempIndex = list.indexWhere((element) => element == true);
+  int? searchTrueInList(List<PersonalAlarmModel>? list){
+    var tempList = list ?? [];
+    for(var element in tempList){
+      if(element.isSelected){
+        return tempList.indexOf(element);
+      }
     }
-    return tempIndex;
-  } //todo: bi ara bu metodu incele de değişebilen elemanlar ile geniş bi sorgu yapılabilir şekilde hazırla!
+    return null;
+  }
 }
 
 //todo:burası tag place abi titlenin altı; ben burdaki kısımda dk,saat,gün,ay,yıl alıcam aynen! okeyiz bunda

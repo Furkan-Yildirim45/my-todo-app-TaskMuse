@@ -65,14 +65,19 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet> with _BottomS
                             controller: _scrollController,
                             itemBuilder: (context, index) {
                               return CustomAnimationElevatedButton(
+                                containerMargin: ((state.personalAlarmHourItems?.length ?? 0) -1) == index
+                                    ? context.padding.kZeroPadding
+                                    : context.padding.bottomOnlyNormal,
+                                containerPadding: context.padding.dynamicSymmetric(vertical: 0, horizontal: 0.06),
+                                  buttonShape: RoundedRectangleBorder(
+                                    borderRadius: context.border.largeBorderRadius
+                                  ),
                                   buttonBackgroundColor:
-                                      AppColor.enoki.getColor(),
+                                      (state.personalAlarmHourItems?[index].isSelected ?? false)
+                                          ? const Color(0xff00CCFF)
+                                          : AppColor.enoki.getColor(),
                                   onPressed: () {
                                     context.read<GlobalManageCubit>().toggleAlarmHourItems(index);
-                                    //todo: knk burda değişiyor ama ben bu alarm sayı butonlarını değiştirebiliyorum
-                                    // ama taskItems a eklerken hour ve minute'yi ekleyemiyorum bu yuzden bunun için
-                                    // bi searchList metodu yaptım orda indexi bulucak ve onu hour ve minuteye atıcaksın sonra
-                                    //minuteyi ve houru test edicen print ile ekkleme kısmında!
                                   },
                                   containerDuration:
                                       context.duration.durationNormal,
@@ -82,7 +87,7 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet> with _BottomS
                                     style: context.general.textTheme.headlineSmall
                                         ?.copyWith(
                                           color: (state.personalAlarmHourItems?[index].isSelected ?? false)
-                                              ? AppColor.aquaticCool.getColor()
+                                              ? Colors.white
                                               : Colors.black
                                     ),
                                   )));
@@ -95,22 +100,32 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet> with _BottomS
                             controller: _scrollController,
                             itemBuilder: (context, index) {
                               return CustomAnimationElevatedButton(
+                                  containerMargin: ((state.personalAlarmMinutesItems?.length ?? 0) -1) == index
+                                      ? context.padding.kZeroPadding
+                                      : context.padding.bottomOnlyNormal,
+                                  containerPadding: context.padding.dynamicSymmetric(vertical: 0, horizontal: 0.06),
+                                  buttonShape: RoundedRectangleBorder(
+                                      borderRadius: context.border.largeBorderRadius
+                                  ),
                                   buttonBackgroundColor:
-                                      AppColor.enoki.getColor(),
+                                  (state.personalAlarmMinutesItems?[index].isSelected ?? false)
+                                      ? const Color(0xff00CCFF)
+                                      : AppColor.enoki.getColor(),
                                   onPressed: () {
                                     context.read<GlobalManageCubit>().toggleAlarmMinutesItem(index);
                                   },
                                   containerDuration:
-                                      context.duration.durationNormal,
+                                  context.duration.durationNormal,
                                   child: Center(
                                       child: Text(
-                                    (index % 60).toString(),
-                                    style: context.general.textTheme.headlineSmall
-                                        ?.copyWith(
+                                        (index % 60).toString(),
+                                        style: context.general.textTheme.headlineSmall
+                                            ?.copyWith(
                                             color: (state.personalAlarmMinutesItems?[index].isSelected ?? false)
-                                                ? AppColor.aquaticCool.getColor()
-                                                : Colors.black),
-                                  )));
+                                                ? Colors.white
+                                                : Colors.black
+                                        ),
+                                      )));
                             },
                           )),
                         ],
@@ -161,8 +176,7 @@ class _MainPageBottomSheetState extends State<MainPageBottomSheet> with _BottomS
         height: context.sized.floatActionButtonSize,
         child: ElevatedButton(
           onPressed: () {
-            context.read<GlobalManageCubit>().bottomSheetAddTaskMethod(context,
-                titleController: _titleController, hour: hour, minute: minute);
+            context.read<GlobalManageCubit>().bottomSheetAddTaskMethod(context, titleController: _titleController);
           },
           style: ButtonStyle(
             backgroundColor: MaterialStatePropertyAll(AppColor.aquaticCool.getColor()),
@@ -190,3 +204,5 @@ mixin _BottomSheetUtility {
   final String addAlarmText = "Add alarm";
 }
 
+//todo:knk burda alarm eklerken hem saatin hem de dk nın verilmesi gerekli diger türlü olarak default bi dk saat ataması yap
+//bunu ayarla bunu yaptıkdan sonra da düzeltme butonuyla tıklandıktan sonra giden sayfayı yapıcaksın!
