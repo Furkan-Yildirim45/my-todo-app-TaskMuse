@@ -8,7 +8,7 @@ import '../../../core/const/colors.dart';
 import '../../../core/widget/bottom_sheet/main_bottom_sheet.dart';
 import '../../../product/global/cubit/global_manage_cubit.dart';
 import '../../../product/global/provider/global_manage_provider.dart';
-import '../../bottom_nav_bar/view/bottom_nav_bar_view.dart';
+import 'bottom_nav_bar_view.dart';
 import '../../home/view/home_view.dart';
 import '../../home/view/home_view_bottom_sheet.dart';
 
@@ -25,6 +25,7 @@ class _MainPageState extends State<MainPage> {
   PageController pageController = PageController();
 
   void _changePageViewPage(int index,BuildContext context){
+    context.read<GlobalManageCubit>().makeIsSwipedFalse();
     pageController.animateToPage(index, duration: context.duration.durationNormal, curve: Curves.fastLinearToSlowEaseIn);
   }
 
@@ -43,7 +44,11 @@ class _MainPageState extends State<MainPage> {
             TasksPageView(),
           ],
         ),
-        bottomNavigationBar: BottomNavBar(onTap: (int index) { _changePageViewPage(index, context); },),
+        bottomNavigationBar: BottomNavBar(
+          onTap: (int index) {
+            _changePageViewPage(index, context);
+          },
+        ),
       ),
     );
   }

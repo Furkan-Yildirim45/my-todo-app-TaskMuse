@@ -156,7 +156,7 @@ class _TasksPageViewState extends State<TasksPageView> with _PageUtility,MainAle
 mixin _PageUtility on State<TasksPageView> {
   double addedCardHeight(BuildContext context) => (context.sized.dynamicHeigth(0.115));
   double get searchButtonSize => context.sized.dynamicHeigth(0.07);
-  String get appBarTitle => 'Your Task by day';
+  String get appBarTitle => 'Your Task for day';
   EdgeInsets get searchBarMargin => context.padding.dynamicSymmetric(vertical: 0.005, horizontal: 0.005);
 
   Container _searchButtonAppBar(BuildContext context) {

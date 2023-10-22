@@ -1,5 +1,5 @@
 
-import '../../../feature/bottom_nav_bar/view/bottom_nav_bar_view.dart';
+import '../../../feature/main_page/view/bottom_nav_bar_view.dart';
 import '../../../feature/home/model/personal_alarm_model.dart';
 import '../../../feature/home/model/personal_tag_model.dart';
 import '../../model/global_model.dart';

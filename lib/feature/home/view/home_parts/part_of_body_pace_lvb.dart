@@ -31,7 +31,9 @@ class _BodyPlaceListViewBuilder extends StatelessWidget
                                     context: context,
                                     state: state,
                                     backgroundColor: const Color(0xFFc2dbff),
-                                    onPressed: () {},
+                                    onPressed: () {
+
+                                    },
                                     index: index,
                                     iconColor: Colors.blue,
                                     icon: Icons.edit
