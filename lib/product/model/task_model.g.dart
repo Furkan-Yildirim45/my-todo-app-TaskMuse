@@ -17,9 +17,9 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return TaskModel(
-      color: fields[0] as String,
+      color: fields[0] as String?,
       title: fields[1] as String,
-      tag: fields[5] as String,
+      tag: fields[5] as String?,
       date: fields[2] as String?,
       isReminderActive: fields[3] as bool,
       isComplete: fields[4] as bool,

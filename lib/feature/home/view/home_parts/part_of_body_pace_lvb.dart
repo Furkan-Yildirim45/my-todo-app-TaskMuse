@@ -1,7 +1,7 @@
 part of "../home_view.dart";
 
 class _BodyPlaceListViewBuilder extends StatelessWidget
-    with _BodyPlaceLVBUtility,MainAlertDialog{
+    with _BodyPlaceLVBUtility,MainAlertDialog,MainBottomSheet{
   const _BodyPlaceListViewBuilder();
 
   @override
@@ -32,7 +32,10 @@ class _BodyPlaceListViewBuilder extends StatelessWidget
                                     state: state,
                                     backgroundColor: const Color(0xFFc2dbff),
                                     onPressed: () {
-
+                                      showCustomMainBottomSheet<GlobalManageCubit>(
+                                          context: context,
+                                          cubit: GlobalManageProvider.globalManageCubit,
+                                          child: const HomePageBottomSheet(isEdit: true));
                                     },
                                     index: index,
                                     iconColor: Colors.blue,

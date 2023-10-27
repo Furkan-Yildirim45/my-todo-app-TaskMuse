@@ -37,7 +37,7 @@ void main(){
     await _instance.addItem(task);
 
     print(task.color);
-    Color color = TaskModel.stringToColor(task.color);
+    Color color = TaskModel.stringToColor(task.color ?? "#000000");
     print(color);
 
     expect(task.title, "test task");

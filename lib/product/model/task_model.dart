@@ -8,7 +8,7 @@ part 'task_model.g.dart';
 @HiveType(typeId: HiveConstants.taskTypeId)
 class TaskModel {
   @HiveField(0)
-  final String color;
+  final String? color;
   @HiveField(1)
   String title;
   @HiveField(2)
@@ -18,7 +18,7 @@ class TaskModel {
   @HiveField(4)
   bool isComplete;
   @HiveField(5)
-  String tag;
+  String? tag;
   @HiveField(6)
   int? alarmHour;
   @HiveField(7)
@@ -26,9 +26,9 @@ class TaskModel {
   bool isSwiped;
 
   TaskModel({
-     required this.color,
+     this.color,
      required this.title,
-    required this.tag,
+    this.tag,
     this.date,
     this.isReminderActive = false,
     this.isComplete = false,

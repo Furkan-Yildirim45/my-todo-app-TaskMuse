@@ -24,7 +24,7 @@ class _MainPageFloatActionButtonState extends State<_MainPageFloatActionButton>
     showCustomMainBottomSheet<GlobalManageCubit>(
       cubit: GlobalManageProvider.globalManageCubit,
       context: context,
-      child: const MainPageBottomSheet(),
+      child: const HomePageBottomSheet( isEdit: false),
     );
   }
 }
