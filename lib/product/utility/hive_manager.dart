@@ -50,9 +50,11 @@ class TaskCacheManager extends ICacheManager<TaskModel>{
     await _box?.addAll(items);
   }
 
+
+  //todo:burda element.id ile yapılması gerekiyor putItems yani güncelleme!!
   @override
   Future<void> putItems(List<TaskModel> items) async {
-    await _box?.putAll(Map.fromEntries(items.map((element) => MapEntry(element.title, element)))); ///değiştirilicek! title
+    await _box?.putAll(Map.fromEntries(items.map((element) => MapEntry(element.title, element))));
   }
 
   @override

@@ -30,6 +30,7 @@ class _BaseSheetHeaderComponent extends StatelessWidget
                     )),
                 onTap: () {
                   Navigator.of(context).pop();
+                  context.read<GlobalManageCubit>().makeIsActiveOfTagFalse();
                 }),
           ),
         ]

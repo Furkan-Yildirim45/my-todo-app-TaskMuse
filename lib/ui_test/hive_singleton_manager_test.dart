@@ -49,7 +49,7 @@ class _HiveSingletonManagerTestState extends State<HiveSingletonManagerTest> {
         itemBuilder: (context, index) {
                   return Container(
                     height: 60,
-                      color: TaskModel.stringToColor(_items![index].color),
+                      color: TaskModel.stringToColor(_items![index].color ?? "#000000"),
                       child: Center(
                     child: Text("${_items?[index].title}"),
                   ));

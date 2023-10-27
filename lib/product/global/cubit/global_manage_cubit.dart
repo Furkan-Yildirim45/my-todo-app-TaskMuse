@@ -74,6 +74,15 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
     }
     emit(state.copyWith(taskItems: tempList,isAnyCardSwiped: false));
   }
+  void makeIsActiveOfTagFalse(){
+    final tempList = state.personalTags ?? [];
+    for(var element in tempList){
+      if(element.isActive){
+        element.isActive = false;
+      }
+    }
+    emit(state.copyWith(personalTags: tempList));
+  }
 
   void setDefaultTaskItems()  {
     emit(state.copyWith(isLoading: true));
@@ -93,7 +102,7 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
     final tempList = state.personalTags ?? [];
     final int tempIndex = tempList.indexWhere((element) => element.isActive);
     emit(state.copyWith(isLoading: true));
-    if (titleController.text.isNotEmpty) {
+    if (titleController.text.isNotEmpty && tempIndex != -1) {
       final task = TaskModel(
         title: titleController.text,
         date: dateNow,
@@ -104,10 +113,39 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
       );
       updatedList.add(task);
       tempList[tempIndex].isActive = false;
-      emit(state.copyWith(taskItems: updatedList,isLoading: false,personalTags: tempList));
+      emit(state.copyWith(taskItems: updatedList,personalTags: tempList));
       await TaskCacheManager.instance.addItem(task).then((value) {
-        context.route.pop();
+        context.route.pop(true);
       });
+    }
+    emit(state.copyWith(isLoading: false));
+  }
+
+  Future<void> bottomSheetEditTaskMethod(BuildContext context,{required TextEditingController titleController}) async{
+    var tempTasksList = state.taskItems ?? [];
+    var tempTagList = state.personalTags ?? [];
+    final int tempTaskListIndex = tempTasksList.indexWhere((element) => element.isSwiped);
+    final int tempTagListIndex = tempTagList.indexWhere((element) => element.isActive);
+    emit(state.copyWith(isLoading: true));
+    if(titleController.text.isNotEmpty){
+      final task = TaskModel(
+        color: tempTasksList[tempTaskListIndex].color,
+        title: titleController.text,
+        tag: (tempTagListIndex == -1) ? tempTasksList[tempTaskListIndex].tag : tempTagList[tempTagListIndex].tag,
+        date: tempTasksList[tempTaskListIndex].date,
+        alarmHour: searchTrueInList(state.personalAlarmHourItems) ?? tempTasksList[tempTaskListIndex].alarmHour,
+        alarmMinute: searchTrueInList(state.personalAlarmMinutesItems) ?? tempTasksList[tempTaskListIndex].alarmMinute,
+        isComplete: tempTasksList[tempTaskListIndex].isComplete,
+        isReminderActive: tempTasksList[tempTaskListIndex].isReminderActive,
+        isSwiped: tempTasksList[tempTaskListIndex].isSwiped,
+      );
+      tempTasksList.remove(tempTasksList[tempTaskListIndex]);
+      tempTasksList.insert(tempTaskListIndex, task);
+      emit(state.copyWith(taskItems: tempTasksList,personalTags: tempTagList,));
+      context.route.pop();
+      makeIsSwipedFalse();
+      await TaskCacheManager.instance.clearAll();
+      await TaskCacheManager.instance.addItems(tempTasksList);
     }
     emit(state.copyWith(isLoading: false));
   }
@@ -186,15 +224,15 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
   void toggleTag(int index){
     emit(state.copyWith(isLoading: true));
     final tempList = state.personalTags ?? [];
-    if(tempList[index].isActive){
+    if(tempList[index].isActive == false){
       tempList[index].isActive = true;
     }
-    else if(state.personalTags?[index].isActive == false){
-      tempList[index].isActive = true;
+    else if(tempList[index].isActive){
+      tempList[index].isActive = false;
     }
-    for(var tag in tempList){
-      if(tempList.indexOf(tag) != index){
-        tag.isActive = false;
+    for(var item in tempList){
+      if(tempList.indexOf(item) != index){
+        item.isActive = false;
       }
     }
     emit(state.copyWith(isLoading: false));
@@ -258,8 +296,3 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
     return null;
   }
 }
-
-//todo:burası tag place abi titlenin altı; ben burdaki kısımda dk,saat,gün,ay,yıl alıcam aynen! okeyiz bunda
-//daha sonra tasks kısmında şey olucak : işte bugunun tasksları,yarının tasksları olucak en alttaki digerler şeklinde yapabilirim
-//üstte searh kısmı olucak,filtreleme
-//o sekilde!
