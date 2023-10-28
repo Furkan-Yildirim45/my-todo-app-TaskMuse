@@ -10,13 +10,15 @@ part 'part_of_header.dart';
 mixin MainBottomSheet {
   Future<T?> showCustomMainBottomSheet<T extends Cubit>(
       {required BuildContext context, Widget? child, required T cubit}) async {
-    BorderRadius generalModalBottomSheetBorderRadius = BorderRadius.vertical(top: Radius.circular(context.sized.dynamicHeigth(0.07)));
+    BorderRadius generalModalBottomSheetBorderRadius = BorderRadius.vertical(
+        top: Radius.circular(context.sized.dynamicHeigth(0.07)));
     return showModalBottomSheet(
       useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: AppColor.enoki.getColor(),
       context: context,
-      shape: RoundedRectangleBorder(borderRadius: generalModalBottomSheetBorderRadius),
+      shape: RoundedRectangleBorder(
+          borderRadius: generalModalBottomSheetBorderRadius),
       builder: (context) {
         return BlocProvider<T>.value(
           value: cubit,
@@ -26,7 +28,6 @@ mixin MainBottomSheet {
         );
       },
     );
-
   }
 }
 
@@ -51,7 +52,6 @@ class _CustomMainBottomSheet extends StatelessWidget {
     );
   }
 }
-
 
 mixin _BaseSheetHeaderComponentUtility {
   final IconData iconArrowBack = Icons.arrow_back;
