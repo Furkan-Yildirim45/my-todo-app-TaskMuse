@@ -4,6 +4,7 @@ import 'package:task_muse/core/widget/custom_elevated_button.dart';
 import 'package:task_muse/feature/tasks/cubit/tasks_cubit.dart';
 import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/general.dart';
+import 'package:task_muse/product/extension/context/icon_size.dart';
 import 'package:task_muse/product/extension/context/padding.dart';
 import 'package:task_muse/product/extension/context/size.dart';
 import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
@@ -29,7 +30,8 @@ class TasksPageView extends StatefulWidget {
   State<TasksPageView> createState() => _TasksPageViewState();
 }
 
-class _TasksPageViewState extends State<TasksPageView> with _PageUtility,MainAlertDialog {
+class _TasksPageViewState extends State<TasksPageView>
+    with _PageUtility, MainAlertDialog {
   late List<TaskModel> taskItems = [];
 
   @override
@@ -38,19 +40,19 @@ class _TasksPageViewState extends State<TasksPageView> with _PageUtility,MainAle
     getItemsFromGlobalCubit();
   }
 
-  void getItemsFromGlobalCubit(){
-    if(TaskCacheManager.instance.getValues?.isNotEmpty ?? false){
+  void getItemsFromGlobalCubit() {
+    if (TaskCacheManager.instance.getValues?.isNotEmpty ?? false) {
       taskItems = TaskCacheManager.instance.getValues!;
     }
   }
 
   void findAndSetItems(String userSearchValue) {
-     if(TaskCacheManager.instance.getValues?.isNotEmpty ?? false){
-       taskItems = TaskCacheManager.instance.getValues!
-           .where((task) =>
-           task.title.toLowerCase().contains(userSearchValue.toLowerCase()))
-           .toList();
-     }
+    if (TaskCacheManager.instance.getValues?.isNotEmpty ?? false) {
+      taskItems = TaskCacheManager.instance.getValues!
+          .where((task) =>
+              task.title.toLowerCase().contains(userSearchValue.toLowerCase()))
+          .toList();
+    }
     setState(() {});
   }
 
@@ -60,104 +62,125 @@ class _TasksPageViewState extends State<TasksPageView> with _PageUtility,MainAle
       create: (context) => TasksCubit(),
       child: BlocBuilder<TasksCubit, TasksState>(
         builder: (context, stateBlocBuilder) {
-          return BlocBuilder<GlobalManageCubit, GlobalManageState>(
-            builder: (context, stateGlobalBuilder) {
-              return GestureDetector(
-                onTap: (stateGlobalBuilder.isAnyCardSwiped ?? false)
-                    ? () {context.read<GlobalManageCubit>().makeIsSwipedFalse();}
-                    : null,
-                child: Scaffold(
-                  appBar: _appBar(stateBlocBuilder, context),
-                  body: (stateGlobalBuilder.isLoading ?? false)
-                      ? const LinearProgressIndicator()
-                      : Padding(
-                          padding: EdgeInsets.all(context.sized.mediumValue),
-                          child: SizedBox(
-                            height: addedCardHeight(context) * (taskItems.length),
-                            child: ListView.builder(
-                              reverse: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: taskItems.length,
-                              itemBuilder: (context, index) {
-                                return SizedBox(
-                                  child: Stack(
-                                    alignment: Alignment.centerRight,
-                                    children: [
-                                      _todoCardPlace(context, index, taskItems),
-                                      _placeOfIsVisibleButtons(context, index),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                ),
-              );
+          return BlocListener<GlobalManageCubit, GlobalManageState>(
+            listener: (context, state) {
+              taskItems = state.taskItems ?? [];
             },
+            child: BlocBuilder<GlobalManageCubit, GlobalManageState>(
+              builder: (context, stateGlobalBuilder) {
+                return GestureDetector(
+                  onTap: (stateGlobalBuilder.isAnyCardSwiped ?? false)
+                      ? () {context.read<GlobalManageCubit>().makeIsSwipedFalse();}
+                      : null,
+                  child: Scaffold(
+                    appBar: _appBar(stateBlocBuilder, context),
+                    body: (stateGlobalBuilder.isLoading ?? false)
+                        ? const LinearProgressIndicator()
+                        : (stateGlobalBuilder.taskItems?.isNotEmpty ?? false)
+                            ? _bodyPart(context)
+                            : const SizedBox.shrink(),
+                  ),
+                );
+              },
+            ),
           );
         },
       ),
     );
   }
 
+  Padding _bodyPart(BuildContext context) {
+    return Padding(
+                              padding:
+                                  EdgeInsets.all(context.sized.mediumValue),
+                              child: SizedBox(
+                                height: addedCardHeight(context) *
+                                    (taskItems.length),
+                                child: ListView.builder(
+                                  reverse: true,
+                                  physics:
+                                      const NeverScrollableScrollPhysics(),
+                                  itemCount: taskItems.length,
+                                  itemBuilder: (context, index) {
+                                    return SizedBox(
+                                      child: Stack(
+                                        alignment: Alignment.centerRight,
+                                        children: [
+                                          _todoCardPlace(
+                                              context, index, taskItems),
+                                          _placeOfIsVisibleButtons(
+                                              context, index),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+  }
+
   Row _placeOfIsVisibleButtons(BuildContext context, int index) {
     return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.end,
-                                      children: [
-                                        IsVisibleButton(
-                                            context: context,
-                                            state: GlobalManageProvider
-                                                .globalManageCubit.state,
-                                            backgroundColor:
-                                                const Color(0xFFc2dbff),
-                                            onPressed: () {},
-                                            index: index,
-                                            iconColor: Colors.blue,
-                                            icon: Icons.edit),
-                                        IsVisibleButton(
-                                          index: index,
-                                          context: context,
-                                          state: GlobalManageProvider
-                                              .globalManageCubit.state,
-                                          backgroundColor:
-                                              const Color(0xffffcfcf),
-                                          onPressed: () {
-                                            customAlertDialog(
-                                              context: context,
-                                              cubit: GlobalManageProvider
-                                                  .globalManageCubit,
-                                              child: AreYouSureWantToDelete(
-                                                  index: index),
-                                            );
-                                          },
-                                          iconColor: Colors.red,
-                                          icon: Icons
-                                              .restore_from_trash_outlined,
-                                        )
-                                      ],
-                                    );
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        IsVisibleButton(
+            context: context,
+            state: GlobalManageProvider.globalManageCubit.state,
+            backgroundColor: const Color(0xFFc2dbff),
+            onPressed: () {},
+            index: index,
+            iconColor: Colors.blue,
+            icon: Icons.edit),
+        IsVisibleButton(
+          index: index,
+          context: context,
+          state: GlobalManageProvider.globalManageCubit.state,
+          backgroundColor: const Color(0xffffcfcf),
+          onPressed: () {
+            customAlertDialog(
+              context: context,
+              cubit: GlobalManageProvider.globalManageCubit,
+              child: AreYouSureWantToDelete(index: index),
+            );
+          },
+          iconColor: Colors.red,
+          icon: Icons.restore_from_trash_outlined,
+        )
+      ],
+    );
   }
 
   AppBar _appBar(TasksState state, BuildContext context) {
     return AppBar(
-              backgroundColor: AppColor.aquaticCool.getColor(),
-            centerTitle: (state.isSearchActive ?? false) ? false : true,
-            title: (state.isSearchActive ?? false)
-                ? _AppBarTextField(onChanged: (value) {findAndSetItems(value);},)
-                : Text(appBarTitle),
-            toolbarHeight: context.sized.floatActionButtonSize,
-            actions: (state.isSearchActive ?? false) ? null : [_searchButtonAppBar(context),],
-          );
+      backgroundColor: AppColor.aquaticCool.getColor(),
+      centerTitle: (state.isSearchActive ?? false) ? false : true,
+      title: (state.isSearchActive ?? false)
+          ? _AppBarTextField(
+              onChanged: (value) {
+                findAndSetItems(value);
+              },
+            )
+          : Text(appBarTitle,style: context.general.textTheme.titleLarge?.copyWith(color: Colors.white,fontWeight: FontWeight.w500),),
+      toolbarHeight: context.sized.floatActionButtonSize,
+      actions: (state.isSearchActive ?? false)
+          ? null
+          : [
+              _searchButtonAppBar(context),
+            ],
+    );
   }
 }
 
 mixin _PageUtility on State<TasksPageView> {
-  double addedCardHeight(BuildContext context) => (context.sized.dynamicHeigth(0.115));
+  double addedCardHeight(BuildContext context) =>
+      (context.sized.dynamicHeigth(0.115));
+
   double get searchButtonSize => context.sized.dynamicHeigth(0.07);
+
   String get appBarTitle => 'Your Task for day';
-  EdgeInsets get searchBarMargin => context.padding.dynamicSymmetric(vertical: 0.005, horizontal: 0.005);
+
+  EdgeInsets get searchBarMargin =>
+      context.padding.dynamicSymmetric(vertical: 0.005, horizontal: 0.005);
 
   Container _searchButtonAppBar(BuildContext context) {
     return Container(
@@ -172,11 +195,13 @@ mixin _PageUtility on State<TasksPageView> {
         onPressed: () {
           context.read<TasksCubit>().changeIsSearchActive();
         },
-        child: const Icon(Icons.search_outlined),
+        child: const Icon(Icons.search_outlined,color: Colors.white,),
       ),
     );
   }
-  SizedBox _todoCardPlace(BuildContext context, int index,List<TaskModel> taskItems){
+
+  SizedBox _todoCardPlace(
+      BuildContext context, int index, List<TaskModel> taskItems) {
     return SizedBox(
       width: (context.sized.width - context.sized.mediumValue * 2),
       child: ToDoCard(
@@ -187,7 +212,3 @@ mixin _PageUtility on State<TasksPageView> {
     );
   }
 }
-
-///todo: en son todoCard içi farklılıkları yapıcam önce bu üsttekiler!
-///todo: knk burda güne göre hazır filtreleme yapıcaz ya burdaki metota ise ben bunu tarihe göre hazılıcam! ama burda düşünem gereken birşey var o da tarihlere göre
-///o takvimi nasıl yapacagım?

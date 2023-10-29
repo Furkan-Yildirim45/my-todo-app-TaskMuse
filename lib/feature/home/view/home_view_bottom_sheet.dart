@@ -81,14 +81,14 @@ mixin _BottomSheetUtility on State<HomePageBottomSheet>{
 
   Padding _addAlarmText(BuildContext context) {
     return Padding(
-      padding: context.padding.topOnlyNormal,
+      padding: context.padding.topOnlySmall,
       child: Text(widget.isEdit ? editAlarmText : addAlarmText),
     );
   }
 
   Padding _categoryText(BuildContext context) {
     return Padding(
-      padding: context.padding.topOnlyNormal,
+      padding: context.padding.topOnlySmall,
       child: Text(widget.isEdit ? editCategoryText : categoryText),
     );
   }

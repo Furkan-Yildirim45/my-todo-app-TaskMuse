@@ -18,7 +18,7 @@ class _GetStartedPageFloatButton extends StatelessWidget with _PageSentenceUtili
         onPressed: () {
           context.read<GlobalManageCubit>().accountActive(context);
         },
-        child: Text(buttonText),
+        child: Text(buttonText,style: context.general.textTheme.titleLarge?.copyWith(color: Colors.white),),
       ),
     );
   }

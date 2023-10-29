@@ -7,7 +7,7 @@ class _BaseSheetHeaderComponent extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: context.sized.floatActionButtonSize,
+      height: context.sized.middleButtonSize,
       child: Stack(
         alignment: Alignment.center,
         clipBehavior: Clip.none,

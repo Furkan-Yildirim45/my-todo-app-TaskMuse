@@ -14,9 +14,10 @@ class _MainPageFloatActionButtonState extends State<_MainPageFloatActionButton>
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      shape: RoundedRectangleBorder(borderRadius: context.border.largeBorderRadius),
       backgroundColor: AppColor.aquaticCool.getColor(),
       onPressed: _onPressedOfFloatActionButton,
-      child: Icon(Icons.add, size: context.iconSize.large),
+      child: Icon(Icons.add, size: context.iconSize.large,color: Colors.white,),
     );
   }
 
