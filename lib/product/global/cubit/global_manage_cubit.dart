@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/feature/get_started/view/get_started_page_view.dart';
 import 'package:task_muse/feature/home/model/personal_alarm_model.dart';
+import 'package:task_muse/main.dart';
 import 'package:task_muse/product/extension/context/navigation.dart';
 import 'package:task_muse/product/global/app_keys.dart';
 import 'package:task_muse/product/model/global_model.dart';
@@ -65,11 +66,9 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
     emit(state.copyWith(taskItems: tempList,changedCardIndex: cardIndex,isAnyCardSwiped: swipedValue));
   }
 
-  bool get swipedController => state.isAnyCardSwiped!;
-
   void makeIsSwipedFalse(){
     final tempList = state.taskItems ?? [];
-    if(checkTaskItemsNotNullAndEmpty){
+    if(checkTaskItemsNotNullAndEmpty && state.changedCardIndex != null){
       tempList[state.changedCardIndex!].isSwiped = false;
     }
     emit(state.copyWith(taskItems: tempList,isAnyCardSwiped: false));
@@ -180,7 +179,7 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
     emit(state.copyWith(globalModel: tempModel));
     emit(state.copyWith(isLoading: false));
     await GlobalCacheManager.instance.addOrPutItem(CachingKeys.globalModelKey, state.globalModel ?? GlobalModel()).then((value) {
-      context.route.navigatePush(const MainPage());
+      context.route.pushReplacement(const MainPage());
     });
   }
   Widget isAccountActiveAndGoPage() {

@@ -28,4 +28,3 @@ mixin MainAlarm{
 }*/
 
 //todo:suanda init ve show kısımları sıkıntı yok ama bi denemek lazım!
-//todo:bi gradle dakileri sil knk olmadı calısmıyor

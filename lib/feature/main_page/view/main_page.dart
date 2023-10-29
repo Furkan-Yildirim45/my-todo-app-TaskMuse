@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/feature/tasks/view/tasks_page_view.dart';
+import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/duration.dart';
 import 'package:task_muse/product/extension/context/icon_size.dart';
 
@@ -34,6 +35,7 @@ class _MainPageState extends State<MainPage> {
     return BlocProvider(
       create: (context) => GlobalManageProvider.globalManageCubit,
       child: Scaffold(
+        
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: const _MainPageFloatActionButton(),
         body: PageView(

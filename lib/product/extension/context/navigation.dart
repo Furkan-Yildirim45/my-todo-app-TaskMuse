@@ -23,9 +23,10 @@ class _ContextNavigationExtension {
       navigation.push<T>(MaterialPageRoute(
           builder: (context) => page,
           settings: RouteSettings(arguments: data)));
+
+  Future<T?> pushReplacement<T extends Object?,T0 extends Object?>(Widget page,{T0? result}) =>
+      navigation.pushReplacement(MaterialPageRoute(builder: (context) => page,),result: result);
 }
-
-
 
 extension NavigationExtension on BuildContext{
   _ContextNavigationExtension get route => _ContextNavigationExtension(this);
