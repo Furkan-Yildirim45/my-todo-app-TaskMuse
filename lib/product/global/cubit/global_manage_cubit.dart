@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/feature/get_started/view/get_started_page_view.dart';
 import 'package:task_muse/feature/home/model/personal_alarm_model.dart';
+import 'package:task_muse/feature/tasks/cubit/tasks_cubit.dart';
 import 'package:task_muse/main.dart';
 import 'package:task_muse/product/extension/context/navigation.dart';
 import 'package:task_muse/product/global/app_keys.dart';
@@ -95,6 +97,7 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
   }
 
   Future<void> bottomSheetAddTaskMethod(BuildContext context, {required TextEditingController titleController}) async {
+    final TasksCubit tasksCubit = TasksCubit();
     final DateTime now = DateTime.now();
     final String dateNow = "${now.day}.${now.month}.${now.year}";
     final updatedList = state.taskItems ?? [];

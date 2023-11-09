@@ -122,11 +122,14 @@ mixin _TodoCardUtility on State<ToDoCard> {
           Text(
             widget.taskItems?[widget.index].title ?? "",
             style: context.general.textTheme.titleLarge?.copyWith(
-                color: (widget.taskItems?[widget.index].isComplete ?? false) ? Colors.grey : AppColor.boatSwain.getColor(),
+                color: (widget.taskItems?[widget.index].isComplete ?? false)
+                    ? Colors.grey
+                    : AppColor.boatSwain.getColor(),
                 decoration:
                     (widget.taskItems?[widget.index].isComplete ?? false)
                         ? TextDecoration.lineThrough
                         : TextDecoration.none),
+                overflow: TextOverflow.ellipsis,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

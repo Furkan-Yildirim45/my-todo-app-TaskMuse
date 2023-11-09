@@ -35,7 +35,6 @@ class _MainPageState extends State<MainPage> {
     return BlocProvider(
       create: (context) => GlobalManageProvider.globalManageCubit,
       child: Scaffold(
-        
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: const _MainPageFloatActionButton(),
         body: PageView(

@@ -9,10 +9,11 @@ import 'core/const/colors.dart';
 import 'core/theme/light_theme.dart';
 
 Future<void> main() async {
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: AppColor.aquaticCool.getColor()));
   final MainInitialize mainInitialize = MainInitialize();
   await mainInitialize.hiveAndCacheManagerSingletonsInit();
   mainInitialize.globalCubitAndLoadTaskInit();
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: AppColor.aquaticCool.getColor()));
   runApp(
     MultiBlocProvider(
       providers: [
