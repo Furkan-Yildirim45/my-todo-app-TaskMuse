@@ -3,7 +3,6 @@ import 'package:task_muse/feature/tasks/cubit/tasks_state.dart';
 
 class TasksCubit extends Cubit<TasksState> {
   TasksCubit() : super(TasksState());
-
   void changeIsSearchActive(){
     emit(state.copyWith(isSearchActive: !(state.isSearchActive ?? false)));
   }

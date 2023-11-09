@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_muse/core/widget/bottom_sheet/main_bottom_sheet.dart';
 import 'package:task_muse/core/widget/custom_elevated_button.dart';
 import 'package:task_muse/feature/tasks/cubit/tasks_cubit.dart';
 import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/general.dart';
-import 'package:task_muse/product/extension/context/icon_size.dart';
 import 'package:task_muse/product/extension/context/padding.dart';
 import 'package:task_muse/product/extension/context/size.dart';
 import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
@@ -17,6 +17,7 @@ import '../../../product/model/task_model.dart';
 import '../../../product/utility/hive_manager.dart';
 import '../../../product/widget/is_visible_button.dart';
 import '../../home/view/home_view_alert_dialog.dart';
+import '../../home/view/home_view_bottom_sheet.dart';
 import '../cubit/tasks_state.dart';
 
 part 'parts/app_bar/part_of_app_bar_text_field.dart';
@@ -31,12 +32,13 @@ class TasksPageView extends StatefulWidget {
 }
 
 class _TasksPageViewState extends State<TasksPageView>
-    with _PageUtility, MainAlertDialog {
+    with _PageUtility, MainAlertDialog,MainBottomSheet {
   late List<TaskModel> taskItems = [];
-
+  late final TasksCubit _tasksCubit;
   @override
   void initState() {
     super.initState();
+    _tasksCubit = TasksCubit();
     getItemsFromGlobalCubit();
   }
 
@@ -93,28 +95,30 @@ class _TasksPageViewState extends State<TasksPageView>
     return Padding(
                               padding:
                                   EdgeInsets.all(context.sized.mediumValue),
-                              child: SizedBox(
-                                height: addedCardHeight(context) *
-                                    (taskItems.length),
-                                child: ListView.builder(
-                                  reverse: true,
-                                  physics:
-                                      const NeverScrollableScrollPhysics(),
-                                  itemCount: taskItems.length,
-                                  itemBuilder: (context, index) {
-                                    return SizedBox(
-                                      child: Stack(
-                                        alignment: Alignment.centerRight,
-                                        children: [
-                                          _todoCardPlace(
-                                              context, index, taskItems),
-                                          _placeOfIsVisibleButtons(
-                                              context, index),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
+                              child: ListView(
+                                children: [
+                                  SizedBox(
+                                    height: addedCardHeight(context) * (taskItems.length),
+                                    child: ListView.builder(
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      reverse: true,
+                                      itemCount: taskItems.length,
+                                      itemBuilder: (context, index) {
+                                        return SizedBox(
+                                          child: Stack(
+                                            alignment: Alignment.centerRight,
+                                            children: [
+                                              _todoCardPlace(
+                                                  context, index, taskItems),
+                                              _placeOfIsVisibleButtons(
+                                                  context, index),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
   }
@@ -127,7 +131,12 @@ class _TasksPageViewState extends State<TasksPageView>
             context: context,
             state: GlobalManageProvider.globalManageCubit.state,
             backgroundColor: const Color(0xFFc2dbff),
-            onPressed: () {},
+            onPressed: () {
+              showCustomMainBottomSheet(
+                  child: const HomePageBottomSheet(isEdit: true),
+                  context: context,
+                  cubit: GlobalManageProvider.globalManageCubit);
+            },
             index: index,
             iconColor: Colors.blue,
             icon: Icons.edit),
