@@ -172,10 +172,7 @@ class _TasksPageViewState extends State<TasksPageView>
           : Text(appBarTitle,style: context.general.textTheme.titleLarge?.copyWith(color: Colors.white,fontWeight: FontWeight.w500),),
       toolbarHeight: context.sized.floatActionButtonSize,
       actions: (state.isSearchActive ?? false)
-          ? null
-          : [
-              _searchButtonAppBar(context),
-            ],
+          ? null : [_searchButtonAppBar(context),],
     );
   }
 }

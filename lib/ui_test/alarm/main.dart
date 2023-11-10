@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:task_muse/ui_test/alarm/view.dart';
-
+import 'package:task_muse/ui_test/alarm/view_copy.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 void main(){
+  tzdata.initializeTimeZones();
   runApp(const Main());
 }
 
