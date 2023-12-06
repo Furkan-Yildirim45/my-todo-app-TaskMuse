@@ -1,10 +1,61 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-class ScheduledOrNowNotificationTrigger {
+
+class NotificationHelper {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
-  ScheduledOrNowNotificationTrigger(this._flutterLocalNotificationsPlugin);
+  NotificationHelper(
+      {required FlutterLocalNotificationsPlugin
+          flutterLocalNotificationsPlugin})
+      : _flutterLocalNotificationsPlugin = flutterLocalNotificationsPlugin;
+
+  Future<void> requestNotificationPermissions() async {
+    // iOS ve macOS için izin isteme
+    await _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    await _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        MacOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
+  Future<void> initializeNotifications() async {
+    // Android ayarları
+    const AndroidInitializationSettings androidInitializationSettings =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    // IOS ayarları
+    const DarwinInitializationSettings iosInitializationSettings =
+    DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+
+    // Tüm ayarlar
+    const InitializationSettings initializationSettings =
+    InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: iosInitializationSettings,
+    );
+
+    // Bildirim pluginini başlat
+    await _flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+    );
+  }
 
   Future<void> showNotification({String? title, String? content}) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -14,7 +65,6 @@ class ScheduledOrNowNotificationTrigger {
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
-      icon: '@mipmap/app_icon',
     );
 
     const NotificationDetails platformChannelSpecifics =
@@ -30,35 +80,34 @@ class ScheduledOrNowNotificationTrigger {
   }
 
   Future<void> scheduleNotification(
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
       {String? title,
         String? content,
         int? hour,
         int? min,
-        int? second}) async {
+        int? sec}) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
-      'id_1',
+      'id_2',
       'name_2',
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
-      icon: '@mipmap/app_icon',
     );
-
+    
     const NotificationDetails platformChannelSpecifics =
     NotificationDetails(android: androidPlatformChannelSpecifics);
 
     final DateTime now = DateTime.now();
-
     final tz.TZDateTime scheduledTime = tz.TZDateTime.from(
       now.add(Duration(
-          seconds: second ?? now.second,
+          seconds: sec ?? now.second + 3,
           minutes: min ?? now.minute,
           hours: hour ?? now.hour)),
       tz.getLocation('Europe/Istanbul'),
     );
 
-    await _flutterLocalNotificationsPlugin.zonedSchedule(
+    await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
       title ?? 'Scheduled Title',
       content ?? 'Scheduled Content',

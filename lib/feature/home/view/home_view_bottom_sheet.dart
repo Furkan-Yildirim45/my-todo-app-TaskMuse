@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_muse/core/const/colors.dart';
 import 'package:task_muse/product/extension/context/border_radius.dart';
 import 'package:task_muse/product/extension/context/general.dart';
 import 'package:task_muse/product/extension/context/padding.dart';
 import 'package:task_muse/product/extension/context/size.dart';
 import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
+import 'package:task_muse/product/utility/main_alarm.dart';
 
 import '../../../product/global/cubit/global_manage_state.dart';
 import '../../../product/widget/alarm_button.dart';
@@ -23,7 +27,8 @@ class HomePageBottomSheet extends StatefulWidget {
 }
 
 class _HomePageBottomSheetState extends State<HomePageBottomSheet> with _BottomSheetUtility{
-
+  late final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
+  late final ScheduledOrNowNotificationTrigger _notificationTrigger;
   @override
   void initState() {
     super.initState();
@@ -31,6 +36,29 @@ class _HomePageBottomSheetState extends State<HomePageBottomSheet> with _BottomS
     context.read<GlobalManageCubit>().setDefaultAlarmHourItemsValue();
     _scrollController = ScrollController();
     _titleController = TextEditingController();
+    _initAlarmElements();
+  }
+
+  void _initAlarmElements(){
+    checkAndRequestPermission();
+    _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    _notificationTrigger = ScheduledOrNowNotificationTrigger(_flutterLocalNotificationsPlugin);
+  }
+
+  Future<void> checkAndRequestPermission() async {
+    final status = await Permission.notification.status;
+
+    if (status.isGranted || status.isLimited) {
+      // İzin verildi veya sınırlı izin varsa işlem yapabilirsiniz.
+    } else {
+      // İzin alınmamış veya reddedilmişse izin iste.
+      final result = await Permission.notification.request();
+      if (result.isGranted) {
+        // İzin verildi, bu izni sakla.
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('notificationPermission', true);
+      }
+    }
   }
 
   @override
@@ -51,7 +79,17 @@ class _HomePageBottomSheetState extends State<HomePageBottomSheet> with _BottomS
             ],
           ),
           const Spacer(),
-          _addTaskButton(context: context, onPressed: widget.isEdit ? edit : add),
+          _addTaskButton(
+              context: context,
+              onPressed: widget.isEdit
+                  ? () {
+                      edit();
+                      _notificationTrigger.showNotification();
+                    }
+                  : () {
+                      add();
+                      _notificationTrigger.showNotification();
+                    }),
         ],
       ),
     );

@@ -7,8 +7,10 @@ import 'package:task_muse/product/global/provider/global_manage_provider.dart';
 import 'package:task_muse/product/init/main_initialize.dart';
 import 'core/const/colors.dart';
 import 'core/theme/light_theme.dart';
+import 'package:timezone/data/latest.dart' as tzData;
 
 Future<void> main() async {
+  tzData.initializeTimeZones();
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: AppColor.aquaticCool.getColor()));
   final MainInitialize mainInitialize = MainInitialize();
