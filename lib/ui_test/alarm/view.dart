@@ -74,7 +74,4 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-///todo: anlık bildiirm geliyor ama zamansal bildirim gelmiyor. herşey halledildi emulator zamanı,
 ///ikonlar olsun manifest dosyaları drawable vs vs !!! mipmap
-///
-/// todo: son durum hata yok ama calısmıyor bildirim
