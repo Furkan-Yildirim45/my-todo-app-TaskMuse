@@ -16,7 +16,7 @@ import 'global_manage_state.dart';
 class GlobalManageCubit extends Cubit<GlobalManageState> {
   GlobalManageCubit() : super(GlobalManageState());
 
-  Future<void> changeReminder(int index) async {
+  Future<void> changeReminder(int index) async { //todo: galiba bunu kullanarak yapıcam o bildirim göstermeyi ve cancelAllSchedules a bak!!!
     final tempList = state.taskItems ?? [];
     state.copyWith(isLoading: true);
     if(checkTaskItemsNotNullAndEmpty){
