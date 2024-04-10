@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_muse/feature/get_started/view/get_started_page_view.dart';
 import 'package:task_muse/feature/home/model/personal_alarm_model.dart';
-import 'package:task_muse/feature/tasks/cubit/tasks_cubit.dart';
-import 'package:task_muse/main.dart';
 import 'package:task_muse/product/extension/context/navigation.dart';
 import 'package:task_muse/product/global/app_keys.dart';
 import 'package:task_muse/product/model/global_model.dart';
@@ -19,7 +16,7 @@ import 'global_manage_state.dart';
 class GlobalManageCubit extends Cubit<GlobalManageState> {
   GlobalManageCubit() : super(GlobalManageState());
 
-  Future<void> changeReminder(int index) async {
+  Future<void> changeReminder(int index) async { //todo: galiba bunu kullanarak yapıcam o bildirim göstermeyi ve cancelAllSchedules a bak!!!
     final tempList = state.taskItems ?? [];
     state.copyWith(isLoading: true);
     if(checkTaskItemsNotNullAndEmpty){
@@ -97,25 +94,29 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
   }
 
   Future<void> bottomSheetAddTaskMethod(BuildContext context, {required TextEditingController titleController}) async {
-    final TasksCubit tasksCubit = TasksCubit();
     final DateTime now = DateTime.now();
     final String dateNow = "${now.day}.${now.month}.${now.year}";
-    final updatedList = state.taskItems ?? [];
-    final tempList = state.personalTags ?? [];
-    final int tempIndex = tempList.indexWhere((element) => element.isActive);
+    final updatedTaskItemList = state.taskItems ?? [];
+    final tempPersonalTagList = state.personalTags ?? [];
+    final int tempPersonalTagIndex = tempPersonalTagList.indexWhere((element) => element.isActive);
+    final hasTrueInPersonalAlarmHourItemList = state.personalAlarmHourItems?.contains(PersonalAlarmModel(isSelected: true));
+    final hasTrueInPersonalAlarmMinuterItemList = state.personalAlarmMinutesItems?.contains(PersonalAlarmModel(isSelected: true));
+    print("hasTrueInPersonalAlarmMinuterItemList : $hasTrueInPersonalAlarmMinuterItemList");
+    print("hasTrueInPersonalAlarmHourItemList : $hasTrueInPersonalAlarmHourItemList");
     emit(state.copyWith(isLoading: true));
-    if (titleController.text.isNotEmpty && tempIndex != -1) {
+    if (titleController.text.isNotEmpty && tempPersonalTagIndex != -1) {
       final task = TaskModel(
         title: titleController.text,
         date: dateNow,
         color: TaskModel.colorToString(_selectedColor() ?? Colors.white),
-        tag: tempList[tempIndex].tag,
+        tag: tempPersonalTagList[tempPersonalTagIndex].tag,
         alarmHour: searchTrueInList(state.personalAlarmHourItems),
         alarmMinute: searchTrueInList(state.personalAlarmMinutesItems),
+        isReminderActive: ((hasTrueInPersonalAlarmHourItemList ?? false) && (hasTrueInPersonalAlarmMinuterItemList ?? false)),
       );
-      updatedList.add(task);
-      tempList[tempIndex].isActive = false;
-      emit(state.copyWith(taskItems: updatedList,personalTags: tempList));
+      updatedTaskItemList.add(task);
+      tempPersonalTagList[tempPersonalTagIndex].isActive = false;
+      emit(state.copyWith(taskItems: updatedTaskItemList,personalTags: tempPersonalTagList));
       await TaskCacheManager.instance.addItem(task).then((value) {
         context.route.pop(true);
       });
@@ -269,7 +270,7 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
         item.isSelected = false;
       }
     }
-    emit(state.copyWith(isLoading: false));
+    emit(state.copyWith(isLoading: false,personalAlarmMinutesItems: tempList));
   }
   void toggleAlarmHourItems(int index){
     emit(state.copyWith(isLoading: true));
@@ -285,7 +286,7 @@ class GlobalManageCubit extends Cubit<GlobalManageState> {
         item.isSelected = false;
       }
     }
-    emit(state.copyWith(isLoading: false));
+    emit(state.copyWith(isLoading: false,personalAlarmHourItems: tempList));
   }
 
   int? searchTrueInList(List<PersonalAlarmModel>? list){

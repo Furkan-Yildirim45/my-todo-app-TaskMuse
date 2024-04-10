@@ -27,10 +27,12 @@ Future<void> main() async {
 
 class Main extends StatelessWidget {
   const Main({Key? key}) : super(key: key);
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       theme: LightTheme().theme,
       debugShowCheckedModeBanner: false,
       home: context.read<GlobalManageCubit>().isAccountActiveAndGoPage(),

@@ -6,10 +6,12 @@ import 'package:task_muse/product/extension/context/general.dart';
 import 'package:task_muse/product/extension/context/padding.dart';
 import 'package:task_muse/product/extension/context/size.dart';
 import 'package:task_muse/product/global/cubit/global_manage_cubit.dart';
+import 'package:task_muse/product/utility/notification_manager.dart';
 
 import '../../../product/global/cubit/global_manage_state.dart';
 import '../../../product/widget/alarm_button.dart';
 import '../../../product/widget/category_button.dart';
+import '../model/personal_alarm_model.dart';
 
 part 'bottom_sheet_parts/part_of_tags_place.dart';
 
@@ -23,7 +25,6 @@ class HomePageBottomSheet extends StatefulWidget {
 }
 
 class _HomePageBottomSheetState extends State<HomePageBottomSheet> with _BottomSheetUtility{
-
   @override
   void initState() {
     super.initState();
@@ -31,6 +32,12 @@ class _HomePageBottomSheetState extends State<HomePageBottomSheet> with _BottomS
     context.read<GlobalManageCubit>().setDefaultAlarmHourItemsValue();
     _scrollController = ScrollController();
     _titleController = TextEditingController();
+    _initNotification();
+  }
+
+  Future<void> _initNotification() async {
+    _notificationManager = NotificationManager();
+    await _notificationManager.initializeNotification(null);
   }
 
   @override
@@ -51,13 +58,11 @@ class _HomePageBottomSheetState extends State<HomePageBottomSheet> with _BottomS
             ],
           ),
           const Spacer(),
-          _addTaskButton(context: context, onPressed: widget.isEdit ? edit : add),
+          _addTaskButton(context)
         ],
       ),
     );
   }
-  void edit() => context.read<GlobalManageCubit>().bottomSheetEditTaskMethod(context, titleController: _titleController);
-  void add() => context.read<GlobalManageCubit>().bottomSheetAddTaskMethod(context, titleController: _titleController);
 }
 
 
@@ -74,10 +79,30 @@ mixin _BottomSheetUtility on State<HomePageBottomSheet>{
   final String addAlarmText = "Add alarm";
   final String editAlarmText = "Edit alarm";
 
+  late final NotificationManager _notificationManager;
   late final ScrollController _scrollController;
   late final TextEditingController _titleController;
   int? hour = 0;
   int? minute = 0;
+
+  void edit() => context.read<GlobalManageCubit>().bottomSheetEditTaskMethod(context, titleController: _titleController);
+  void add() => context.read<GlobalManageCubit>().bottomSheetAddTaskMethod(context, titleController: _titleController);
+  bool _getScheduledValue(GlobalManageState state) {
+    return (state.personalAlarmHourItems
+        ?.contains(PersonalAlarmModel(isSelected: true)) ?? false) &&
+        (state.personalAlarmMinutesItems
+            ?.contains(PersonalAlarmModel(isSelected: true)) ?? false);
+  }
+
+  Future<void> _showTaskNotification() async {
+    await _notificationManager.showNotification(
+      title: "Hatırlatma!",
+      body: "Bir Adet görevin var.",
+      scheduled: true,
+      hour: hour,
+      minute: minute,
+    );
+  }
 
   Padding _addAlarmText(BuildContext context) {
     return Padding(
@@ -104,24 +129,41 @@ mixin _BottomSheetUtility on State<HomePageBottomSheet>{
     );
   }
 
-  Padding _addTaskButton({required BuildContext context, required void Function() onPressed}) {
+  Padding _addTaskButton(BuildContext context) {
     return Padding(
       padding: context.padding.bottomOnlyNormal,
-      child: SizedBox(
-        width: context.sized.dynamicWidth(0.6),
-        height: context.sized.floatActionButtonSize,
-        child: ElevatedButton(
-          onPressed: onPressed,
-          style: ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(AppColor.aquaticCool.getColor()),
-              shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                  borderRadius: context.border.largeBorderRadius))),
-          child: Text(
-            widget.isEdit ? editTaskText : addTaskText,
-            style: context.general.textTheme.titleLarge
-                ?.copyWith(color: Colors.white),
-          ),
-        ),
+      child: BlocBuilder<GlobalManageCubit, GlobalManageState>(
+        builder: (context, state) {
+          return SizedBox(
+            width: context.sized.dynamicWidth(0.6),
+            height: context.sized.floatActionButtonSize,
+            child: ElevatedButton(
+              onPressed: widget.isEdit
+                  ? () {
+                      edit();
+                      if(_getScheduledValue(state)){
+                        _showTaskNotification();
+                      }
+                    }
+                  : () {
+                      add();
+                      if(_getScheduledValue(state)){
+                        _showTaskNotification();
+                      }
+                    },
+              style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                      AppColor.aquaticCool.getColor()),
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius: context.border.largeBorderRadius))),
+              child: Text(
+                widget.isEdit ? editTaskText : addTaskText,
+                style: context.general.textTheme.titleLarge
+                    ?.copyWith(color: Colors.white),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -144,6 +186,7 @@ mixin _BottomSheetUtility on State<HomePageBottomSheet>{
                       itemBuilder: (context, index) {
                         return BottomSheetAlarmButton(index: index, minOrHour: 24, onPressed: () {
                           context.read<GlobalManageCubit>().toggleAlarmHourItems(index);
+                          setState(() {hour = index;});
                         },minOrHourItems: state.personalAlarmHourItems,);
                       },
                     )),
@@ -156,7 +199,8 @@ mixin _BottomSheetUtility on State<HomePageBottomSheet>{
                         return BottomSheetAlarmButton(
                           index: index,
                           minOrHour: 60,
-                          onPressed: () {context.read<GlobalManageCubit>().toggleAlarmMinutesItem(index);},
+                          onPressed: () {context.read<GlobalManageCubit>().toggleAlarmMinutesItem(index);
+                          setState(() {minute = index;});},
                           minOrHourItems: state.personalAlarmMinutesItems,
                         );
                       },
@@ -170,3 +214,4 @@ mixin _BottomSheetUtility on State<HomePageBottomSheet>{
   }
 }
 
+//todo: bildirim kısmı açıldıgında açılsın kapatıldıgında kapatılsın!
